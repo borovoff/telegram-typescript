@@ -1,19 +1,18 @@
-import {Tdlib} from "../tdlib";
-import {Messages} from "../models/message/messages";
+import {tdlib, Tdlib} from "../../tdlib";
+import {Messages} from "../../models/message/messages";
 
 export class MessagesComponent extends HTMLElement {
-    constructor(private tdlib: Tdlib,
-                private rootElement: HTMLElement) {
+    constructor() {
         super();
         this.attachShadow({mode: 'open'});
         this.shadowRoot.innerHTML = `
         <style>
             :host {
                 overflow-y: auto;
+                height: calc(100vh - 50px);
             }
         </style><slot></slot>`;
 
-        rootElement.appendChild(this);
         tdlib.messages.registerListener((messages: Messages) => this.addMessages(messages));
     }
 

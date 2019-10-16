@@ -7,8 +7,7 @@ export class GetChats extends TdlibType {
     limit: number;
 
     constructor(offset_chat_id: number, limit: number, offset_order: string = TG_CONSTANT.default_offset_order) {
-        super();
-        this['@type'] = 'getChats';
+        super('getChats');
 
         this.limit = limit;
         this.offset_chat_id = offset_chat_id;

@@ -1,32 +1,22 @@
-import {Tdlib} from "../tdlib";
 import {LeftColumnComponent} from "./left-column/left-column.component";
-import {RightColumnComponent} from "./right-column.component";
+import {RightColumnComponent} from "./right-column/right-column.component";
 
 export class MainComponent extends HTMLElement {
-    constructor(private tdlib: Tdlib) {
+    constructor() {
         super();
         this.attachShadow({mode: 'open'});
 
-        this.shadowRoot.innerHTML = `
-        <style>
-            :host {
+        const style = document.createElement('style');
+        style.textContent = `
+        :host {
                 position: fixed;
                 display: flex;
                 height: 100vh;
-            }
-        </style><slot></slot>`;
+        }`;
 
-        document.body.appendChild(this);
-        new LeftColumnComponent(this.tdlib, this);
-        new RightColumnComponent(this.tdlib, this);
-        this.renderLogOut();
-    }
-
-    renderLogOut() {
-        const button = document.createElement('button');
-        button.innerText = 'logout';
-        button.addEventListener('click', _ => this.tdlib.logout());
-        // this.shadowRoot.appendChild(button);
+        this.shadowRoot.appendChild(style);
+        this.shadowRoot.appendChild(new LeftColumnComponent());
+        this.shadowRoot.appendChild(new RightColumnComponent());
     }
 }
 

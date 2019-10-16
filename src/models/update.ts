@@ -17,5 +17,9 @@ export enum Update {
     UserFullInfo = 'updateUserFullInfo',
     Ok = 'ok',
     Supergroup = 'updateSupergroup',
-    BasicGroup = 'updateBasicGroup'
+    BasicGroup = 'updateBasicGroup',
+    SupergroupFullInfo = 'updateSupergroupFullInfo',
+    UnreadMessageCount = 'updateUnreadMessageCount',
+    UnreadChatCount = 'updateUnreadChatCount',
+    UserChatAction = 'updateUserChatAction'
 }

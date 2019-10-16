@@ -1,4 +1,4 @@
-import {TdlibType} from './tdlib-type';
+import {TdlibType} from '../tdlib-type';
 
 export class CheckAuthenticationPassword extends TdlibType {
     password: string;

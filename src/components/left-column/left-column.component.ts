@@ -1,23 +1,21 @@
-import {Tdlib} from "../../tdlib";
-import {ChatsComponent} from "../chats.component";
+import {ChatsComponent} from "./chats.component";
+import {ControlComponent} from "./control.component";
 
 export class LeftColumnComponent extends HTMLElement {
-    constructor(private tdlib: Tdlib,
-                private main: HTMLElement) {
+    constructor() {
         super();
-        this.attachShadow({mode: 'open'});
+        const shadow = this.attachShadow({mode: 'open'});
 
-        this.shadowRoot.innerHTML = `
-        <style>
-            :host {
-                display: flex;
-                flex-direction: column;
-            }
-        </style><slot></slot>`;
+        const style = document.createElement('style');
+        style.textContent = `
+        :host {
+            display: flex;
+            flex-direction: column;
+        }`;
 
-        main.appendChild(this);
-
-        new ChatsComponent(this.tdlib, this);
+        shadow.appendChild(style);
+        shadow.appendChild(new ChatsComponent());
+        shadow.appendChild(new ControlComponent());
     }
 
 }

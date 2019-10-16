@@ -1,35 +1,32 @@
-import {Tdlib} from "./tdlib";
-import {AuthorizationState} from "./models/authorization-state";
+import {tdlib} from "./tdlib";
+import {AuthorizationState} from "./models/auth/authorization-state";
 import {MainComponent} from "./components/main.component";
 import {Error} from "./models/error";
 
 export class App {
-    tdlib: Tdlib;
-
     constructor() {
         this.createTdlib();
         document.body.style.margin = '0';
     }
 
     createTdlib() {
-        this.tdlib = new Tdlib();
-        this.tdlib.registerAuthorizationState((type: AuthorizationState) => this.renderLogin(type));
+        tdlib.registerAuthorizationState((type: AuthorizationState) => this.renderLogin(type));
     }
 
     renderLogin(type: AuthorizationState) {
         this.removeChild();
         switch (type) {
             case AuthorizationState.WaitEncryptionKey:
-                this.tdlib.checkDatabaseEncryptionKey();
+                tdlib.checkDatabaseEncryptionKey();
                 break;
             case AuthorizationState.WaitPhoneNumber:
-                this.renderForm('Phone number', phone => this.tdlib.setAuthenticationPhoneNumber(phone));
+                this.renderForm('Phone number', phone => tdlib.setAuthenticationPhoneNumber(phone));
                 break;
             case AuthorizationState.WaitCode:
-                this.renderForm('Code', code => this.tdlib.checkAuthenticationCode(code));
+                this.renderForm('Code', code => tdlib.checkAuthenticationCode(code));
                 break;
             case AuthorizationState.WaitPassword:
-                this.renderForm('Password', password => this.tdlib.checkAuthenticationPassword(password));
+                this.renderForm('Password', password => tdlib.checkAuthenticationPassword(password));
                 break;
             case AuthorizationState.WaitRegistration:
                 break;
@@ -72,7 +69,7 @@ export class App {
     }
 
     renderMain() {
-        new MainComponent(this.tdlib);
+        document.body.appendChild(new MainComponent());
     }
 }
 

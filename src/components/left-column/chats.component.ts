@@ -1,8 +1,9 @@
-import {Tdlib} from "../tdlib";
-import {Chat} from "../models/chat/chat";
-import {UpdateChatLastMessage} from "../models/chat/update-chat-last-message";
-import {UpdateChatOrder} from "../models/chat/update-chat-order";
-import {Message} from "../models/message/message";
+import {tdlib, Tdlib} from "../../tdlib";
+import {Chat} from "../../models/chat/chat";
+import {UpdateChatLastMessage} from "../../models/chat/update-chat-last-message";
+import {UpdateChatOrder} from "../../models/chat/update-chat-order";
+import {Message} from "../../models/message/message";
+import {currentChatId} from "../../current-chat-id";
 
 interface ViewChat extends Chat {
     lastMessage: Message;
@@ -10,24 +11,21 @@ interface ViewChat extends Chat {
 
 export class ChatsComponent extends HTMLElement {
     chats = {};
-    currentChatId: number;
 
-    constructor(private tdlib: Tdlib,
-                private rootElement: HTMLElement) {
+    constructor() {
         super();
         this.attachShadow({mode: 'open'});
 
-        this.shadowRoot.innerHTML = `
-        <style>
-            :host {
+        const style = document.createElement('style');
+        style.textContent = `
+        :host {
                 min-width: 300px;
                 overflow-y: auto;
-            }
-        </style>
-        <slot></slot>`;
+        }`;
 
-        rootElement.appendChild(this);
-        tdlib.registerChatListener((chat: Chat) => this.chats[chat.id] = chat);
+        this.shadowRoot.appendChild(style);
+
+        tdlib.newChat.registerListener((chat: Chat) => this.chats[chat.id] = chat);
         tdlib.chatLastMessage.registerListener((update: UpdateChatLastMessage) => {
             if (update.order !== '0') this.updateChatOrder(update);
             const chat: ViewChat = this.chats[update.chat_id];
@@ -40,6 +38,7 @@ export class ChatsComponent extends HTMLElement {
     }
 
     updateChatOrder(chatOrder: UpdateChatOrder | UpdateChatLastMessage) {
+        console.log('last mess');
         const chatId = chatOrder.chat_id;
         const stringId = chatId.toString();
         let chatElement = document.getElementById(stringId);
@@ -51,9 +50,9 @@ export class ChatsComponent extends HTMLElement {
             const chat: ViewChat = this.chats[chatId];
             chatElement.innerText = chat.title;
             chatElement.addEventListener('click', () => {
-                if (this.currentChatId !== chatId) {
-                    this.currentChatId = chatId;
-                    this.tdlib.getChatHistory(chatId, chat.lastMessage.id);
+                if (currentChatId.value !== chatId) {
+                    currentChatId.value = chatId;
+                    tdlib.getChatHistory(chatId, chat.lastMessage.id);
                 }
             });
 

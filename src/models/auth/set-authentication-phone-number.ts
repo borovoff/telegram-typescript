@@ -1,4 +1,4 @@
-import {TdlibType} from './tdlib-type';
+import {TdlibType} from '../tdlib-type';
 
 export class SetAuthenticationPhoneNumber extends TdlibType {
     phone_number: string;
