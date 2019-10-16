@@ -4,5 +4,6 @@ export enum AuthorizationState {
     WaitCode = 'authorizationStateWaitCode',
     WaitRegistration = 'authorizationStateWaitRegistration',
     WaitPassword = 'authorizationStateWaitPassword',
-    Ready = 'authorizationStateReady'
+    Ready = 'authorizationStateReady',
+    Closed = 'authorizationStateClosed'
 }

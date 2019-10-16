@@ -45,5 +45,8 @@ testem.log
 .DS_Store
 Thumbs.db
 
+/js
 /src/**/*.js
 /src/**/*.js.map
+
+/server-deploy.sh
