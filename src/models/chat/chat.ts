@@ -19,7 +19,7 @@ export class Chat extends TdlibType {
     notification_settings: ChatNotificationSettings;
     order: string;
     permissions: ChatPermissions;
-    photo: ChatPhoto;
+    photo?: ChatPhoto;
     pinned_message_id: number;
     reply_markup_message_id: number;
     title: string;

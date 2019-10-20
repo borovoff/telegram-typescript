@@ -1,13 +1,9 @@
-import {tdlib, Tdlib} from "../../tdlib";
+import {tdlib} from "../../tdlib";
 import {Chat} from "../../models/chat/chat";
 import {UpdateChatLastMessage} from "../../models/chat/update-chat-last-message";
 import {UpdateChatOrder} from "../../models/chat/update-chat-order";
-import {Message} from "../../models/message/message";
 import {currentChatId} from "../../current-chat-id";
-
-interface ViewChat extends Chat {
-    lastMessage: Message;
-}
+import {ChatComponent} from "./chat.component";
 
 export class ChatsComponent extends HTMLElement {
     chats = {};
@@ -19,44 +15,50 @@ export class ChatsComponent extends HTMLElement {
         const style = document.createElement('style');
         style.textContent = `
         :host {
-                min-width: 300px;
+                width: 300px;
                 overflow-y: auto;
         }`;
 
         this.shadowRoot.appendChild(style);
 
-        tdlib.newChat.registerListener((chat: Chat) => this.chats[chat.id] = chat);
-        tdlib.chatLastMessage.registerListener((update: UpdateChatLastMessage) => {
-            if (update.order !== '0') this.updateChatOrder(update);
-            const chat: ViewChat = this.chats[update.chat_id];
-
-            // TODO Is it a good way? Because the object chat has the last message id. May be better store the last message near.
-            chat.lastMessage = update.last_message;
-        });
+        tdlib.newChat.registerListener((chat: Chat) => this.newChat(chat));
+        tdlib.chatLastMessage.registerListener((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
         tdlib.chatOrder.registerListener((chatOrder: UpdateChatOrder) => this.updateChatOrder(chatOrder));
         tdlib.getChats();
     }
 
+    newChat(chat: Chat) {
+        const chatComponent = new ChatComponent(chat);
+        chatComponent.id = chat.id.toString();
+
+        this.chats[chat.id] = chatComponent;
+    }
+
+    updateChatLastMessage(update: UpdateChatLastMessage) {
+        const chatComponent = this.chats[update.chat_id];
+
+        chatComponent.setLastMessage(update.last_message);
+
+        chatComponent.addEventListener('click', () => {
+            const id = parseInt(chatComponent.id);
+            if (currentChatId.value !== id) {
+                currentChatId.value = id;
+                tdlib.getChatHistory(id, update.last_message.id);
+            }
+        });
+
+        if (update.order !== '0') {
+            this.updateChatOrder(update);
+        }
+    }
+
     updateChatOrder(chatOrder: UpdateChatOrder | UpdateChatLastMessage) {
-        console.log('last mess');
-        const chatId = chatOrder.chat_id;
-        const stringId = chatId.toString();
-        let chatElement = document.getElementById(stringId);
+        let chatElement = this.shadowRoot.getElementById(chatOrder.chat_id.toString()) as ChatComponent;
+
         if (chatElement) {
             this.shadowRoot.insertBefore(chatElement, this.shadowRoot.firstChild);
         } else {
-            chatElement = document.createElement('div');
-            chatElement.id = stringId;
-            const chat: ViewChat = this.chats[chatId];
-            chatElement.innerText = chat.title;
-            chatElement.addEventListener('click', () => {
-                if (currentChatId.value !== chatId) {
-                    currentChatId.value = chatId;
-                    tdlib.getChatHistory(chatId, chat.lastMessage.id);
-                }
-            });
-
-            this.shadowRoot.appendChild(chatElement);
+            this.shadowRoot.appendChild(this.chats[chatOrder.chat_id]);
         }
     }
 }

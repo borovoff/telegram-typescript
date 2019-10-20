@@ -1,5 +1,5 @@
 export class BaseHTMLElement extends HTMLElement {
-    constructor(style: string) {
+    constructor(style?: string) {
         super();
         const shadow = this.attachShadow({mode: 'open'});
         const styleElement = document.createElement('style');

@@ -21,5 +21,9 @@ export enum Update {
     SupergroupFullInfo = 'updateSupergroupFullInfo',
     UnreadMessageCount = 'updateUnreadMessageCount',
     UnreadChatCount = 'updateUnreadChatCount',
-    UserChatAction = 'updateUserChatAction'
+    UserChatAction = 'updateUserChatAction',
+    MessageViews = 'updateMessageViews',
+    DeleteMessages = 'updateDeleteMessages',
+    File = 'updateFile',
+    MessageSendSucceeded = 'updateMessageSendSucceeded'
 }

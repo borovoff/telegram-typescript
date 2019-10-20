@@ -1,5 +1,6 @@
 import {TdlibType} from '../tdlib-type';
 import {MessageText} from './message-text';
+import {MessageSendingState} from "./message-sending-state";
 
 export class Message extends TdlibType {
     author_signature: string;
@@ -22,4 +23,5 @@ export class Message extends TdlibType {
     ttl_expires_in: number;
     via_bot_user_id: number;
     views: number;
+    sending_state: MessageSendingState;
 }

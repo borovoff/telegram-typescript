@@ -5,18 +5,14 @@ import {InputComponent} from "./input.component";
 export class RightColumnComponent extends HTMLElement {
     constructor() {
         super();
-        const shadow = this.attachShadow({mode: 'open'});
 
-        const style = document.createElement('style');
-        style.textContent = `
-        :host {
-            display: flex;
-            flex-direction: column;
-        }`;
+        const style = this.style;
+        style.display = 'flex';
+        style.flexDirection = 'column';
+        style.width = '100%';
 
-        shadow.appendChild(style);
-        shadow.appendChild(new MessagesComponent());
-        shadow.appendChild(new InputComponent());
+        this.appendChild(new MessagesComponent());
+        this.appendChild(new InputComponent());
     }
 }
 

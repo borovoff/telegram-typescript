@@ -4,19 +4,15 @@ import {RightColumnComponent} from "./right-column/right-column.component";
 export class MainComponent extends HTMLElement {
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
 
-        const style = document.createElement('style');
-        style.textContent = `
-        :host {
-                position: fixed;
-                display: flex;
-                height: 100vh;
-        }`;
+        const style = this.style;
+        style.position = 'fixed';
+        style.display = 'flex';
+        style.height = '100vh';
+        style.width = '100%';
 
-        this.shadowRoot.appendChild(style);
-        this.shadowRoot.appendChild(new LeftColumnComponent());
-        this.shadowRoot.appendChild(new RightColumnComponent());
+        this.appendChild(new LeftColumnComponent());
+        this.appendChild(new RightColumnComponent());
     }
 }
 

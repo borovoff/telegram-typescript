@@ -18,6 +18,7 @@ export class InputComponent extends BaseHTMLElement {
         form.addEventListener('submit', (ev: Event) => {
             ev.preventDefault();
             tdlib.sendMessage(input.value);
+            input.value = '';
         })
     }
 }
