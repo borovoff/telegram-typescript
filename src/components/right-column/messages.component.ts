@@ -17,6 +17,18 @@ export class MessagesComponent extends HTMLElement {
             
             .message {
                 max-width: 80%;
+                border: 1px solid black;
+                border-radius: 16px;
+                padding: 5px;
+                margin: 5px;
+                word-break: break-word;
+            }
+            
+            .stranger {
+                align-self: flex-start;
+            }
+            
+            .my {
                 align-self: flex-end;
             }
         </style>`;
@@ -39,9 +51,22 @@ export class MessagesComponent extends HTMLElement {
         }
 
         messages.messages.forEach(m => {
-            const messagesComponent = new MessageComponent(m);
+            const messageComponent = new MessageComponent(m);
+            messageComponent.classList.add(m.is_outgoing ? 'my' : 'stranger');
+            this.messagesContainer.insertBefore(messageComponent, this.messagesContainer.firstChild);
 
-            this.messagesContainer.insertBefore(messagesComponent, this.messagesContainer.firstChild);
+            let width = messageComponent.offsetWidth;
+            const maxWidth = 0.78 * this.offsetWidth;
+
+            if (width > maxWidth) {
+                const height = messageComponent.offsetHeight;
+
+                while (messageComponent.offsetHeight === height && width > 0) {
+                    messageComponent.style.width = --width + 'px';
+                }
+
+                messageComponent.style.width = ++width + 'px';
+            }
         })
     }
 }

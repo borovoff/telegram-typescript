@@ -39,7 +39,7 @@ export class ChatComponent extends BaseHTMLElement {
             display: flex;
             flex-direction: column;
             margin-left: 10px;
-            width: 230px;
+            width: 220px;
         }
        
         .counter, .read {
