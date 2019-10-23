@@ -7,7 +7,7 @@ export class FileStore {
     add(file: File, listener) {
         const updateListener = new UpdateListener<File>();
         updateListener.value = file;
-        updateListener.registerListener(listener);
+        updateListener.subscribe(listener);
         this.files[file.id] = updateListener;
     }
 

@@ -3,10 +3,10 @@ import {tdlib} from "../../tdlib";
 
 export class ControlComponent extends BaseHTMLElement {
     constructor() {
-        super(`
+        super(`<style>
             :host {
                 height: 100px;
-            }`);
+            }</style>`);
         this.renderLogOut();
     }
 

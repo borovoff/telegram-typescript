@@ -3,10 +3,10 @@ import {tdlib} from "../../tdlib";
 
 export class InputComponent extends BaseHTMLElement {
     constructor() {
-        super(`
+        super(`<style>
             :host {
                 
-        }`);
+        }</style>`);
 
         const form = document.createElement('form');
         const input = document.createElement('input');

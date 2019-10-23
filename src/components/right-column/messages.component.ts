@@ -1,9 +1,12 @@
-import {tdlib, Tdlib} from "../../tdlib";
+import {tdlib} from "../../tdlib";
 import {Messages} from "../../models/message/messages";
 import {MessageComponent} from "./message.component";
+import {UpdateChatLastMessage} from "../../models/chat/update-chat-last-message";
+import {currentChatId} from "../../current-chat-id";
 
 export class MessagesComponent extends HTMLElement {
     messagesContainer: HTMLElement;
+    messages = new Map<number, MessageComponent>([]);
 
     constructor() {
         super();
@@ -90,7 +93,8 @@ export class MessagesComponent extends HTMLElement {
         this.messagesContainer.classList.add('messages');
         this.appendChild(this.messagesContainer);
 
-        tdlib.messages.registerListener((messages: Messages) => this.addMessages(messages));
+        tdlib.messages.subscribe((messages: Messages) => this.addMessages(messages));
+        tdlib.chatLastMessage.subscribe((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
     }
 
     addMessages(messages: Messages) {
@@ -102,27 +106,47 @@ export class MessagesComponent extends HTMLElement {
         messages.messages.forEach((m, i) => {
             const messageComponent = new MessageComponent(m);
 
-            const classList = messageComponent.classList;
-            classList.add(m.is_outgoing ? 'my' : 'stranger');
-            if (last) classList.add('last');
+            messageComponent.addClasses(last, m.is_outgoing);
             this.messagesContainer.insertBefore(messageComponent, this.messagesContainer.firstChild);
 
             const next = ++i;
             if (next < messages.total_count) last = m.is_outgoing !== messages.messages[next].is_outgoing;
 
-            let width = messageComponent.offsetWidth;
-            const maxWidth = 0.78 * this.offsetWidth;
+            this.minimizeWidth(messageComponent);
 
-            if (width > maxWidth) {
-                const height = messageComponent.offsetHeight;
-
-                while (messageComponent.offsetHeight === height && width > 0) {
-                    messageComponent.style.width = --width + 'px';
-                }
-
-                messageComponent.style.width = ++width + 'px';
-            }
+            this.messages.set(m.id, messageComponent);
         })
+    }
+
+    minimizeWidth(messageComponent: MessageComponent) {
+        let width = messageComponent.offsetWidth;
+        const maxWidth = 0.78 * this.offsetWidth;
+
+        if (width > maxWidth) {
+            const height = messageComponent.offsetHeight;
+
+            while (messageComponent.offsetHeight === height && width > 0) {
+                messageComponent.style.width = --width + 'px';
+            }
+
+            messageComponent.style.width = ++width + 'px';
+        }
+    }
+
+    updateChatLastMessage(update: UpdateChatLastMessage) {
+        if (update.chat_id === currentChatId.value) {
+            const m = update.last_message;
+            const messageComponent = new MessageComponent(m);
+            const messageComponents = Array.from(this.messages.values());
+            const previous = messageComponents[0] as MessageComponent;
+
+            messageComponent.addClasses(true, m.is_outgoing);
+            if (m.is_outgoing === previous.message.is_outgoing) previous.classList.remove('last');
+
+            messageComponents.unshift(messageComponent);
+
+            this.messagesContainer.appendChild(messageComponent);
+        }
     }
 }
 

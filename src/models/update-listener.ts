@@ -1,18 +1,18 @@
 export class UpdateListener<T> {
     private _value;
 
-    listener = val => {};
+    listeners = [];
 
     set value(val: T) {
         this._value = val;
-        this.listener(val);
+        this.listeners.forEach(l => l(val));
     }
 
     get value(): T {
         return this._value;
     }
 
-    registerListener(listener) {
-        this.listener = listener;
+    subscribe(listener) {
+        this.listeners.push(listener);
     }
 }

@@ -9,42 +9,44 @@ import {Message} from "../../models/message/message";
 export class ChatComponent extends BaseHTMLElement {
     message: HTMLElement;
     read: HTMLElement;
+    private _lastMessage: Message;
 
     constructor(chat: Chat) {
-        super(`
-        :host, .top, .bottom {
-            display: flex;
-        }
-        
-        .top, .bottom {
-            justify-content: space-between;
-        }
-        
-        .bottom {
-            height: 40px;
-            overflow-y: hidden;
-        }
-        
-        :host {
-            padding: 10px;
-        }
-        
-        .image {
-            height: 50px;
-            width: 50px;
-            border-radius: 50%;
-        }
-        
-        .text {
-            display: flex;
-            flex-direction: column;
-            margin-left: 10px;
-            width: 220px;
-        }
-       
-        .counter, .read {
-            align-self: flex-end;
-        }`);
+        super(`<style>
+    :host, .top, .bottom {
+        display: flex;
+    }
+
+    .top, .bottom {
+        justify-content: space-between;
+    }
+
+    .bottom {
+        height: 40px;
+        overflow-y: hidden;
+    }
+
+    :host {
+        padding: 10px;
+    }
+
+    .image {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+    }
+
+    .text {
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+        width: 220px;
+    }
+
+    .counter, .read {
+        align-self: flex-end;
+    }
+</style>`);
 
         const img = this.create('img') as HTMLImageElement;
         img.classList.add('image');
@@ -97,12 +99,22 @@ export class ChatComponent extends BaseHTMLElement {
     }
 
     setLastMessage(message: Message) {
+        this._lastMessage = message;
+
         const text = message.content.text;
         if (text) {
             this.message.innerText = text.text;
         }
 
         this.read.innerText = message.date.toString();
+    }
+
+    get lastMessageId(): number {
+        return this._lastMessage.id;
+    }
+
+    get lastMessage(): Message {
+        return this._lastMessage;
     }
 
 }

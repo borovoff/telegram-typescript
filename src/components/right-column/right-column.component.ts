@@ -1,4 +1,3 @@
-import {Tdlib} from "../../tdlib";
 import {MessagesComponent} from "./messages.component";
 import {InputComponent} from "./input.component";
 

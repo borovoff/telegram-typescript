@@ -21,9 +21,9 @@ export class ChatsComponent extends HTMLElement {
 
         this.shadowRoot.appendChild(style);
 
-        tdlib.newChat.registerListener((chat: Chat) => this.newChat(chat));
-        tdlib.chatLastMessage.registerListener((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
-        tdlib.chatOrder.registerListener((chatOrder: UpdateChatOrder) => this.updateChatOrder(chatOrder));
+        tdlib.newChat.subscribe((chat: Chat) => this.newChat(chat));
+        tdlib.chatLastMessage.subscribe((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
+        tdlib.chatOrder.subscribe((chatOrder: UpdateChatOrder) => this.updateChatOrder(chatOrder));
         tdlib.getChats();
     }
 
@@ -35,22 +35,28 @@ export class ChatsComponent extends HTMLElement {
     }
 
     updateChatLastMessage(update: UpdateChatLastMessage) {
-        const chatComponent = this.chats[update.chat_id];
+        const chatComponent = this.chats[update.chat_id] as ChatComponent;
 
         chatComponent.setLastMessage(update.last_message);
 
-        chatComponent.addEventListener('click', () => {
-            const id = parseInt(chatComponent.id);
-            if (currentChatId.value !== id) {
-                currentChatId.value = id;
-                tdlib.getChatHistory(id, update.last_message.id);
-            }
-        });
+        console.log('remove: ', chatComponent.removeEventListener('click', this.eventListener));
+        chatComponent.addEventListener('click', this.eventListener);
 
         if (update.order !== '0') {
             this.updateChatOrder(update);
         }
     }
+
+    eventListener = (ev: MouseEvent) => this.getChatHistory(ev);
+
+    getChatHistory(ev: MouseEvent) {
+        const chatComponent = ev.target as ChatComponent;
+        const id = parseInt(chatComponent.id);
+        if (currentChatId.value !== id) {
+            currentChatId.value = id;
+            tdlib.getChatHistory(id, chatComponent.lastMessage);
+        }
+    };
 
     updateChatOrder(chatOrder: UpdateChatOrder | UpdateChatLastMessage) {
         let chatElement = this.shadowRoot.getElementById(chatOrder.chat_id.toString()) as ChatComponent;
