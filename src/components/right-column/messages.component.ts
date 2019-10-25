@@ -16,6 +16,7 @@ export class MessagesComponent extends HTMLElement {
             .messages {
                 display: flex;
                 flex-direction: column;
+                width: calc(100% - 13px);
                 margin: 5px;
             }
             
@@ -31,10 +32,12 @@ export class MessagesComponent extends HTMLElement {
             
             .stranger {
                 align-self: flex-start;
+                background-color: rgb(34, 48, 63);
             }
             
             .my {
                 align-self: flex-end;
+                background-color: rgb(63, 107, 149);
             }
             
             .my.last:before, .my.last:after {
@@ -48,7 +51,7 @@ export class MessagesComponent extends HTMLElement {
                 z-index: 0;
                 right: -8px;
                 width: 20px;
-                background: blue;
+                background: rgb(63, 107, 149);
                 border-bottom-left-radius: 15px;
             }
 
@@ -56,7 +59,7 @@ export class MessagesComponent extends HTMLElement {
                 z-index: 1;
                 right: -10px;
                 width: 10px;
-                background: white;
+                background: rgb(24, 34, 45);
                 border-bottom-left-radius: 10px;
             }
 
@@ -71,7 +74,7 @@ export class MessagesComponent extends HTMLElement {
                 z-index: 0;
                 left: -7px;
                 width: 20px;
-                background: blue;
+                background: rgb(34, 48, 63);
                 border-bottom-right-radius: 15px;
             }
 
@@ -79,7 +82,7 @@ export class MessagesComponent extends HTMLElement {
                 z-index: 1;
                 left: -10px;
                 width: 10px;
-                background: white;
+                background: rgb(24, 34, 45);
                 border-bottom-right-radius: 10px;
             }
         </style>`;
@@ -87,7 +90,7 @@ export class MessagesComponent extends HTMLElement {
         const style = this.style;
         style.overflowY = 'auto';
         style.height = 'calc(100vh - 50px)';
-        style.width = '100%';
+        style.scrollBehavior = 'smooth';
 
         this.messagesContainer = document.createElement('div');
         this.messagesContainer.classList.add('messages');
@@ -115,7 +118,9 @@ export class MessagesComponent extends HTMLElement {
             this.minimizeWidth(messageComponent);
 
             this.messages.set(m.id, messageComponent);
-        })
+        });
+
+        this.scrollTo(0, this.scrollHeight);
     }
 
     minimizeWidth(messageComponent: MessageComponent) {
@@ -144,8 +149,12 @@ export class MessagesComponent extends HTMLElement {
             if (m.is_outgoing === previous.message.is_outgoing) previous.classList.remove('last');
 
             messageComponents.unshift(messageComponent);
+            this.messages.clear();
+            messageComponents.forEach(m => this.messages.set(m.message.id, m));
 
             this.messagesContainer.appendChild(messageComponent);
+
+            this.scrollTo(0, this.scrollHeight);
         }
     }
 }

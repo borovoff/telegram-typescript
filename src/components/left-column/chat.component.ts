@@ -15,6 +15,7 @@ export class ChatComponent extends BaseHTMLElement {
         super(`<style>
     :host, .top, .bottom {
         display: flex;
+        color: white;
     }
 
     .top, .bottom {
@@ -41,6 +42,7 @@ export class ChatComponent extends BaseHTMLElement {
         flex-direction: column;
         margin-left: 10px;
         width: 220px;
+        color: white;
     }
 
     .counter, .read {

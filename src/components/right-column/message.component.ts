@@ -18,13 +18,6 @@ export class MessageComponent extends HTMLElement {
         z-index: 1000;
     }
 
-    body {
-        font-family: helvetica;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
-
     .chat {
         width: 300px;
         border: solid 1px #EEE;

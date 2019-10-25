@@ -10,6 +10,8 @@ export class MainComponent extends HTMLElement {
         style.display = 'flex';
         style.height = '100vh';
         style.width = '100%';
+        style.backgroundColor = 'rgb(24, 34, 45)';
+        style.fontFamily = 'Helvetica';
 
         this.appendChild(new LeftColumnComponent());
         this.appendChild(new RightColumnComponent());
