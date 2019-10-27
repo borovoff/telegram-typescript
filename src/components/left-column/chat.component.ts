@@ -5,11 +5,22 @@ import {fileStore} from "../../stores/file-store";
 import {File} from "../../models/file/file";
 import {FilePart} from "../../models/file/file-part";
 import {Message} from "../../models/message/message";
+import {DateHelper} from "../../date-helper";
 
 export class ChatComponent extends BaseHTMLElement {
     message: HTMLElement;
     read: HTMLElement;
     private _lastMessage: Message;
+    private colors = [
+        '#cc90e2',
+        '#80d066',
+        '#ecd074',
+        '#6fb1e4',
+        '#e57979',
+        '#f98bae',
+        '#73cdd0',
+        '#fba76f'
+    ];
 
     constructor(chat: Chat) {
         super(`<style>
@@ -31,10 +42,16 @@ export class ChatComponent extends BaseHTMLElement {
         padding: 10px;
     }
 
-    .image {
+    .image, .letter-circle {
         height: 50px;
         width: 50px;
         border-radius: 50%;
+    }
+    
+    .letter-circle {
+        text-align: center;
+        line-height: 52px;
+        font-size: 20px; 
     }
 
     .text {
@@ -50,12 +67,12 @@ export class ChatComponent extends BaseHTMLElement {
     }
 </style>`);
 
-        const img = this.create('img') as HTMLImageElement;
-        img.classList.add('image');
-        this.shadowRoot.appendChild(img);
-
         const photo = chat.photo;
         if (photo) {
+            const img = this.create('img') as HTMLImageElement;
+            img.classList.add('image');
+            this.shadowRoot.appendChild(img);
+
             img.src = photo.small.local.path;
             fileStore.add(photo.small, (val: File) =>
                 tdlib.readFile(val.id)
@@ -63,6 +80,13 @@ export class ChatComponent extends BaseHTMLElement {
                         img.src = URL.createObjectURL(r.data))
                     .catch(_ => {}));
             tdlib.downloadFile(photo.small);
+        } else {
+            const letterCircle = this.create();
+            letterCircle.classList.add('letter-circle');
+            letterCircle.style.backgroundColor = this.colors[Math.abs(chat.type.user_id) % 8];
+            letterCircle.innerText = this.getInitials(chat.title);
+
+            this.shadowRoot.appendChild(letterCircle);
         }
 
         const text = this.create();
@@ -96,6 +120,20 @@ export class ChatComponent extends BaseHTMLElement {
         bottom.appendChild(counter);
     }
 
+    getInitials(title: string): string {
+        const array = title.split(' ');
+
+        const second = array[1];
+
+        return this.getLetter(array[0]) + (second ? this.getLetter(second) : '');
+    }
+
+    getLetter(word: string) {
+        const l = word.charAt(0).toUpperCase();
+
+        return l.toLowerCase() !== l ? l : '';
+    }
+
     create(tag: string = 'div'): HTMLElement {
         return document.createElement(tag);
     }
@@ -108,7 +146,7 @@ export class ChatComponent extends BaseHTMLElement {
             this.message.innerText = text.text;
         }
 
-        this.read.innerText = message.date.toString();
+        this.read.innerText = DateHelper.getTime(message.date);
     }
 
     get lastMessageId(): number {

@@ -3,14 +3,15 @@ import {Messages} from "../../models/message/messages";
 import {MessageComponent} from "./message.component";
 import {UpdateChatLastMessage} from "../../models/chat/update-chat-last-message";
 import {currentChatId} from "../../current-chat-id";
+import {Message} from "../../models/message/message";
 
 export class MessagesComponent extends HTMLElement {
     messagesContainer: HTMLElement;
     messages = new Map<number, MessageComponent>([]);
+    canAppend = true;
 
     constructor() {
         super();
-        // this.attachShadow({mode: 'open'});
         this.innerHTML = `
         <style>
             .messages {
@@ -21,13 +22,22 @@ export class MessagesComponent extends HTMLElement {
             }
             
             .message {
-                max-width: 80%;
+                max-width: 500px;
                 border-radius: 20px;
-                background-color: blue;
                 color: white;
                 padding: 10px 16px;
                 margin: 2px;
                 word-break: break-word;
+                position: relative;
+            }
+            
+            .message-text {
+                overflow: auto;
+            }
+            
+            .message-date {
+                float: right;
+                margin-left: 10px;
             }
             
             .stranger {
@@ -96,16 +106,45 @@ export class MessagesComponent extends HTMLElement {
         this.messagesContainer.classList.add('messages');
         this.appendChild(this.messagesContainer);
 
-        tdlib.messages.subscribe((messages: Messages) => this.addMessages(messages));
+        this.addEventListener('scroll', (ev: Event) => {
+            const target = ev.target as MessagesComponent;
+            if (target.scrollTop < 50 && this.canAppend) {
+                this.canAppend = false;
+                const messageComponents = Array.from(this.messages.values());
+                const topMessage = messageComponents[messageComponents.length - 1].message;
+                tdlib.appendChatHistory(currentChatId.value, topMessage.id)
+                    .then((messages: Messages) => {
+                        this.appendMessages(messages, topMessage)
+                    });
+            }
+        });
+
+        tdlib.messages.subscribe((messages: Messages) => this.createMessages(messages));
         tdlib.chatLastMessage.subscribe((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
     }
 
-    addMessages(messages: Messages) {
+    appendMessages(messages: Messages, topMessage: Message) {
+        const height = this.messagesContainer.offsetHeight;
+        let last = messages.messages[0].is_outgoing !== topMessage.is_outgoing;
+
+        this.addMessages(messages, last);
+
+        this.scrollTo(0, this.messagesContainer.offsetHeight - height);
+
+        this.canAppend = true;
+    }
+
+    createMessages(messages: Messages) {
         while (this.messagesContainer.firstChild) {
             this.messagesContainer.firstChild.remove();
         }
 
-        let last = true;
+        this.addMessages(messages, true);
+
+        this.scrollTo(0, this.scrollHeight);
+    }
+
+    addMessages(messages: Messages, last: boolean) {
         messages.messages.forEach((m, i) => {
             const messageComponent = new MessageComponent(m);
 
@@ -115,12 +154,10 @@ export class MessagesComponent extends HTMLElement {
             const next = ++i;
             if (next < messages.total_count) last = m.is_outgoing !== messages.messages[next].is_outgoing;
 
-            this.minimizeWidth(messageComponent);
+            // this.minimizeWidth(messageComponent);
 
             this.messages.set(m.id, messageComponent);
         });
-
-        this.scrollTo(0, this.scrollHeight);
     }
 
     minimizeWidth(messageComponent: MessageComponent) {
