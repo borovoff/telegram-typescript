@@ -124,12 +124,17 @@ export class MessagesComponent extends HTMLElement {
     }
 
     appendMessages(messages: Messages, topMessage: Message) {
-        const height = this.messagesContainer.offsetHeight;
-        let last = messages.messages[0].is_outgoing !== topMessage.is_outgoing;
+        if (messages.total_count > 0) {
+            const height = this.messagesContainer.offsetHeight;
 
-        this.addMessages(messages, last);
+            console.log('messages: ', messages);
 
-        this.scrollTo(0, this.messagesContainer.offsetHeight - height);
+            let last = messages.messages[0].is_outgoing !== topMessage.is_outgoing;
+
+            this.addMessages(messages, last);
+
+            this.scrollTo(0, this.messagesContainer.offsetHeight - height);
+        }
 
         this.canAppend = true;
     }

@@ -12,14 +12,24 @@ export class ChatsComponent extends HTMLElement {
         super();
         this.attachShadow({mode: 'open'});
 
-        const style = document.createElement('style');
-        style.textContent = `
-        :host {
-                width: 300px;
-                overflow-y: auto;
-        }`;
+        this.shadowRoot.innerHTML = `
+<style>
+    :host {
+        width: 300px;
+        overflow-y: auto;
+    }
 
-        this.shadowRoot.appendChild(style);
+    .chat {
+        padding: 10px;
+        display: flex;
+        color: white;
+    }
+    
+    .current-chat {
+        background-color: rgb(63, 107, 149);
+    }
+</style>`;
+
 
         tdlib.newChat.subscribe((chat: Chat) => this.newChat(chat));
         tdlib.chatLastMessage.subscribe((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
@@ -50,9 +60,16 @@ export class ChatsComponent extends HTMLElement {
     eventListener = (ev: MouseEvent) => this.getChatHistory(ev);
 
     getChatHistory(ev: MouseEvent) {
-        const chatComponent = ev.target as ChatComponent;
+        const chatComponent = ev.currentTarget as ChatComponent;
         const id = parseInt(chatComponent.id);
         if (currentChatId.value !== id) {
+
+            if (currentChatId.value) {
+                const previous = this.chats[currentChatId.value] as ChatComponent;
+                previous.classList.remove('current-chat');
+            }
+            
+            chatComponent.classList.add('current-chat');
             currentChatId.value = id;
             tdlib.getChatHistory(id, chatComponent.lastMessage);
         }

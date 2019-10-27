@@ -7,7 +7,7 @@ import {FilePart} from "../../models/file/file-part";
 import {Message} from "../../models/message/message";
 import {DateHelper} from "../../date-helper";
 
-export class ChatComponent extends BaseHTMLElement {
+export class ChatComponent extends HTMLElement {
     message: HTMLElement;
     read: HTMLElement;
     private _lastMessage: Message;
@@ -23,8 +23,10 @@ export class ChatComponent extends BaseHTMLElement {
     ];
 
     constructor(chat: Chat) {
-        super(`<style>
-    :host, .top, .bottom {
+        super();
+
+        this.innerHTML = `<style>
+    .top, .bottom {
         display: flex;
         color: white;
     }
@@ -36,10 +38,6 @@ export class ChatComponent extends BaseHTMLElement {
     .bottom {
         height: 40px;
         overflow-y: hidden;
-    }
-
-    :host {
-        padding: 10px;
     }
 
     .image, .letter-circle {
@@ -65,13 +63,15 @@ export class ChatComponent extends BaseHTMLElement {
     .counter, .read {
         align-self: flex-end;
     }
-</style>`);
+</style>`;
+
+        this.classList.add('chat');
 
         const photo = chat.photo;
         if (photo) {
             const img = this.create('img') as HTMLImageElement;
             img.classList.add('image');
-            this.shadowRoot.appendChild(img);
+            this.appendChild(img);
 
             img.src = photo.small.local.path;
             fileStore.add(photo.small, (val: File) =>
@@ -86,12 +86,12 @@ export class ChatComponent extends BaseHTMLElement {
             letterCircle.style.backgroundColor = this.colors[Math.abs(chat.type.user_id) % 8];
             letterCircle.innerText = this.getInitials(chat.title);
 
-            this.shadowRoot.appendChild(letterCircle);
+            this.appendChild(letterCircle);
         }
 
         const text = this.create();
         text.classList.add('text');
-        this.shadowRoot.appendChild(text);
+        this.appendChild(text);
 
         const top = this.create();
         top.classList.add('top');
