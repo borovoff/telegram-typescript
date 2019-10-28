@@ -1,7 +1,7 @@
 export class UpdateListener<T> {
     private _value;
 
-    listeners = [];
+    listeners: ((val: T) => void)[] = [];
 
     set value(val: T) {
         this._value = val;
@@ -12,7 +12,7 @@ export class UpdateListener<T> {
         return this._value;
     }
 
-    subscribe(listener) {
+    subscribe(listener: (val: T) => void) {
         this.listeners.push(listener);
     }
 }

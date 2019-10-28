@@ -1,8 +1,10 @@
 import {Message} from '../../models/message/message';
 import {DateHelper} from "../../date-helper";
+import {MessageText} from "../../models/message/message-text";
 
 export class MessageComponent extends HTMLElement {
     private _message: Message;
+    private span: HTMLElement;
 
     constructor(message: Message) {
         super();
@@ -12,9 +14,11 @@ export class MessageComponent extends HTMLElement {
 
         const textEl = document.createElement('div');
         const text = message.content.text;
+        this.span = document.createElement('span');
         if (text) {
-            textEl.innerText = text.text;
+            this.span.innerText = text.text;
         }
+        textEl.appendChild(this.span);
         textEl.classList.add('message-text');
 
         const date = document.createElement('div');
@@ -28,6 +32,17 @@ export class MessageComponent extends HTMLElement {
 
     get message(): Message {
         return this._message;
+    }
+
+    set messageId(id: number) {
+        this._message.id = id;
+    }
+
+    updateMessageContent(newContent: MessageText) {
+        const text = newContent.text;
+        if (text) {
+            this.span.innerText = text.text;
+        }
     }
 
     addClasses(last: boolean, is_outgoing: boolean) {

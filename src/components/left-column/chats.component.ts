@@ -49,7 +49,7 @@ export class ChatsComponent extends HTMLElement {
 
         chatComponent.setLastMessage(update.last_message);
 
-        console.log('remove: ', chatComponent.removeEventListener('click', this.eventListener));
+        chatComponent.removeEventListener('click', this.eventListener);
         chatComponent.addEventListener('click', this.eventListener);
 
         if (update.order !== '0') {
@@ -68,7 +68,7 @@ export class ChatsComponent extends HTMLElement {
                 const previous = this.chats[currentChatId.value] as ChatComponent;
                 previous.classList.remove('current-chat');
             }
-            
+
             chatComponent.classList.add('current-chat');
             currentChatId.value = id;
             tdlib.getChatHistory(id, chatComponent.lastMessage);

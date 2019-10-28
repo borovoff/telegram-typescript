@@ -25,5 +25,7 @@ export enum Update {
     MessageViews = 'updateMessageViews',
     DeleteMessages = 'updateDeleteMessages',
     File = 'updateFile',
-    MessageSendSucceeded = 'updateMessageSendSucceeded'
+    MessageSendSucceeded = 'updateMessageSendSucceeded',
+    MessageContent = 'updateMessageContent',
+    MessageEdited = 'updateMessageEdited'
 }

@@ -4,6 +4,8 @@ import {MessageComponent} from "./message.component";
 import {UpdateChatLastMessage} from "../../models/chat/update-chat-last-message";
 import {currentChatId} from "../../current-chat-id";
 import {Message} from "../../models/message/message";
+import {UpdateMessageSendSucceeded} from "../../models/message/update-message-send-succeeded";
+import {UpdateMessageContent} from "../../models/message/update-message-content";
 
 export class MessagesComponent extends HTMLElement {
     messagesContainer: HTMLElement;
@@ -121,13 +123,32 @@ export class MessagesComponent extends HTMLElement {
 
         tdlib.messages.subscribe((messages: Messages) => this.createMessages(messages));
         tdlib.chatLastMessage.subscribe((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
+        tdlib.sendSucceeded.subscribe(update => this.updateMessageSendSucceed(update));
+        tdlib.messageContent.subscribe(update => this.updateMessageContent(update));
+    }
+
+    updateMessageContent(update: UpdateMessageContent) {
+        const id = update.message_id;
+
+        if (update.chat_id === currentChatId.value && this.messages.has(id)) {
+            this.messages.get(id).updateMessageContent(update.new_content);
+        }
+    }
+
+    updateMessageSendSucceed(update: UpdateMessageSendSucceeded) {
+        const oldId = update.old_message_id;
+        const messageComponent = this.messages.get(oldId);
+        messageComponent.messageId = update.message.id;
+
+        this.messages.delete(oldId);
+
+        const messageComponents = Array.from(this.messages.values());
+        this.unshift(messageComponents, messageComponent);
     }
 
     appendMessages(messages: Messages, topMessage: Message) {
         if (messages.total_count > 0) {
             const height = this.messagesContainer.offsetHeight;
-
-            console.log('messages: ', messages);
 
             let last = messages.messages[0].is_outgoing !== topMessage.is_outgoing;
 
@@ -180,9 +201,16 @@ export class MessagesComponent extends HTMLElement {
         }
     }
 
+    unshift(components: MessageComponent[], component: MessageComponent) {
+        components.unshift(component);
+        this.messages.clear();
+        components.forEach(m => this.messages.set(m.message.id, m));
+    }
+
     updateChatLastMessage(update: UpdateChatLastMessage) {
-        if (update.chat_id === currentChatId.value) {
-            const m = update.last_message;
+        const m = update.last_message;
+
+        if (update.chat_id === currentChatId.value && !this.messages.has(m.id)) {
             const messageComponent = new MessageComponent(m);
             const messageComponents = Array.from(this.messages.values());
             const previous = messageComponents[0] as MessageComponent;
@@ -190,9 +218,7 @@ export class MessagesComponent extends HTMLElement {
             messageComponent.addClasses(true, m.is_outgoing);
             if (m.is_outgoing === previous.message.is_outgoing) previous.classList.remove('last');
 
-            messageComponents.unshift(messageComponent);
-            this.messages.clear();
-            messageComponents.forEach(m => this.messages.set(m.message.id, m));
+            this.unshift(messageComponents, messageComponent);
 
             this.messagesContainer.appendChild(messageComponent);
 
