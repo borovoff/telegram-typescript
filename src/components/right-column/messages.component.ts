@@ -6,98 +6,180 @@ import {currentChatId} from "../../current-chat-id";
 import {Message} from "../../models/message/message";
 import {UpdateMessageSendSucceeded} from "../../models/message/update-message-send-succeeded";
 import {UpdateMessageContent} from "../../models/message/update-message-content";
+import {currentChat} from "../../current-chat";
 
 export class MessagesComponent extends HTMLElement {
     messagesContainer: HTMLElement;
     messages = new Map<number, MessageComponent>([]);
     canAppend = true;
+    readOutbox = true;
 
     constructor() {
         super();
-        this.innerHTML = `
-        <style>
-            .messages {
-                display: flex;
-                flex-direction: column;
-                width: calc(100% - 13px);
-                margin: 5px;
-            }
-            
-            .message {
-                max-width: 500px;
-                border-radius: 20px;
-                color: white;
-                padding: 10px 16px;
-                margin: 2px;
-                word-break: break-word;
-                position: relative;
-            }
-            
-            .message-text {
-                overflow: auto;
-            }
-            
-            .message-date {
-                float: right;
-                margin-left: 10px;
-            }
-            
-            .stranger {
-                align-self: flex-start;
-                background-color: rgb(34, 48, 63);
-            }
-            
-            .my {
-                align-self: flex-end;
-                background-color: rgb(63, 107, 149);
-            }
-            
-            .my.last:before, .my.last:after {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                height: 20px;
-            }
+        this.innerHTML = `<style>
+    .messages {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 13px);
+        margin: 5px;
+    }
 
-            .my.last:before {
-                z-index: 0;
-                right: -8px;
-                width: 20px;
-                background: rgb(63, 107, 149);
-                border-bottom-left-radius: 15px;
-            }
+    .message {
+        max-width: 500px;
+        border-radius: 20px;
+        color: white;
+        padding: 10px 16px;
+        margin: 2px;
+        word-break: break-word;
+        position: relative;
+    }
 
-            .my.last:after {
-                z-index: 1;
-                right: -10px;
-                width: 10px;
-                background: rgb(24, 34, 45);
-                border-bottom-left-radius: 10px;
-            }
+    .message-text {
+        overflow: auto;
+    }
 
-            .stranger.last:before, .stranger.last:after {
-                content: "";
-                position: absolute;
-                bottom: 0;
-                height: 20px;
-            }
+    .float-container {
+        float: right;
+        margin-left: 10px;
+        display: flex;
+    }
 
-            .stranger.last:before {
-                z-index: 0;
-                left: -7px;
-                width: 20px;
-                background: rgb(34, 48, 63);
-                border-bottom-right-radius: 15px;
-            }
+    .message-date {
+    }
 
-            .stranger.last:after {
-                z-index: 1;
-                left: -10px;
-                width: 10px;
-                background: rgb(24, 34, 45);
-                border-bottom-right-radius: 10px;
-            }
-        </style>`;
+    .stranger {
+        align-self: flex-start;
+        background-color: rgb(34, 48, 63);
+    }
+
+    .my {
+        align-self: flex-end;
+        background-color: rgb(63, 107, 149);
+    }
+
+    .my.last:before, .my.last:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        height: 20px;
+    }
+
+    .my.last:before {
+        z-index: 0;
+        right: -8px;
+        width: 20px;
+        background: rgb(63, 107, 149);
+        border-bottom-left-radius: 15px;
+    }
+
+    .my.last:after {
+        z-index: 1;
+        right: -10px;
+        width: 10px;
+        background: rgb(24, 34, 45);
+        border-bottom-left-radius: 10px;
+    }
+
+    .stranger.last:before, .stranger.last:after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        height: 20px;
+    }
+
+    .stranger.last:before {
+        z-index: 0;
+        left: -7px;
+        width: 20px;
+        background: rgb(34, 48, 63);
+        border-bottom-right-radius: 15px;
+    }
+
+    .stranger.last:after {
+        z-index: 1;
+        left: -10px;
+        width: 10px;
+        background: rgb(24, 34, 45);
+        border-bottom-right-radius: 10px;
+    }
+    
+    .check-container {
+        width: 20px;
+        height: 18px;
+        position: relative;
+        margin-left: 6px;
+    }
+
+    .check-mark {
+        display: inline-block;
+        width: 0;
+        height: 10px;
+        transform: rotate(45deg);
+    }
+
+    .check-mark-received {
+        margin-left: 2px;
+    }
+
+    .check-mark:before,
+    .check-mark:after {
+        content: "";
+        position: absolute;
+        background-color: white;
+    }
+
+    .check-mark:after {
+        width: 1px;
+        left: 0;
+        bottom: 5px;
+    }
+
+    .check-mark:after {
+        height: 10px;
+    }
+
+    .check-mark-animate:after {
+        height: 0;
+        animation: check-after 0.5s 550ms cubic-bezier(.4, .0, .23, 1) forwards;
+    }
+
+    .check-mark:before {
+        height: 1px;
+        left: -3px;
+        top: 4px;
+    }
+
+    .check-mark:before {
+        width: 4px;
+    }
+
+    .check-mark-animate:before {
+        width: 0;
+        animation: check-before 0.3s 250ms cubic-bezier(.4, .0, .23, 1) forwards;
+    }
+
+    .check-mark-received:before {
+        display: none;
+    }
+
+    @keyframes check-before {
+        from {
+            width: 0;
+        }
+        to {
+            width: 4px;
+        }
+    }
+
+    @keyframes check-after {
+        from {
+            height: 0;
+        }
+        to {
+            height: 10px;
+        }
+    }
+</style>`;
 
         const style = this.style;
         style.overflowY = 'auto';
@@ -164,6 +246,7 @@ export class MessagesComponent extends HTMLElement {
         while (this.messagesContainer.firstChild) {
             this.messagesContainer.firstChild.remove();
         }
+        this.readOutbox = false;
 
         this.addMessages(messages, true);
 
@@ -181,6 +264,15 @@ export class MessagesComponent extends HTMLElement {
             if (next < messages.total_count) last = m.is_outgoing !== messages.messages[next].is_outgoing;
 
             // this.minimizeWidth(messageComponent);
+
+            if (m.is_outgoing) {
+                if (this.readOutbox) {
+                    messageComponent.readOutbox();
+                } else if (currentChat.value.last_read_outbox_message_id === m.id) {
+                    this.readOutbox = true;
+                    messageComponent.readOutbox();
+                }
+            }
 
             this.messages.set(m.id, messageComponent);
         });
@@ -220,9 +312,12 @@ export class MessagesComponent extends HTMLElement {
 
             this.unshift(messageComponents, messageComponent);
 
-            this.messagesContainer.appendChild(messageComponent);
-
-            this.scrollTo(0, this.scrollHeight);
+            if (this.scrollHeight - this.scrollTop === this.clientHeight) {
+                this.messagesContainer.appendChild(messageComponent);
+                this.scrollTo(0, this.scrollHeight);
+            } else {
+                this.messagesContainer.appendChild(messageComponent);
+            }
         }
     }
 }

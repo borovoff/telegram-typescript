@@ -50,3 +50,4 @@ Thumbs.db
 /src/**/*.js.map
 
 /server-deploy.sh
+/test.html

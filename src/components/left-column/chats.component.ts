@@ -4,6 +4,7 @@ import {UpdateChatLastMessage} from "../../models/chat/update-chat-last-message"
 import {UpdateChatOrder} from "../../models/chat/update-chat-order";
 import {currentChatId} from "../../current-chat-id";
 import {ChatComponent} from "./chat.component";
+import {currentChat} from "../../current-chat";
 
 export class ChatsComponent extends HTMLElement {
     chats = {};
@@ -63,6 +64,7 @@ export class ChatsComponent extends HTMLElement {
         const chatComponent = ev.currentTarget as ChatComponent;
         const id = parseInt(chatComponent.id);
         if (currentChatId.value !== id) {
+            currentChat.value = chatComponent.chat;
 
             if (currentChatId.value) {
                 const previous = this.chats[currentChatId.value] as ChatComponent;

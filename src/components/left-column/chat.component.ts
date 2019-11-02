@@ -10,6 +10,8 @@ import {DateHelper} from "../../date-helper";
 export class ChatComponent extends HTMLElement {
     message: HTMLElement;
     read: HTMLElement;
+    chat: Chat;
+
     private _lastMessage: Message;
     private colors = [
         '#cc90e2',
@@ -64,6 +66,8 @@ export class ChatComponent extends HTMLElement {
         align-self: flex-end;
     }
 </style>`;
+
+        this.chat = chat;
 
         this.classList.add('chat');
 
