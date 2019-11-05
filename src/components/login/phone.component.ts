@@ -2,6 +2,9 @@ import {CountryButton} from "../../models/interface/country-button";
 import {COUNTRY_CODES} from "../../constants/country_codes";
 import {CountryComponent} from "./country.component";
 import {LoginPlaceholder} from "../../models/interface/login-placeholder";
+import {Error} from "../../models/error";
+import {tdlib} from "../../tdlib";
+import 'flag-icon-css/css/flag-icon.min.css'
 
 
 export class PhoneComponent extends HTMLElement {
@@ -12,37 +15,34 @@ export class PhoneComponent extends HTMLElement {
     }
 
     render() {
-        this.css();
-
-        const column = this.create();
-        column.classList.add('login-column');
-        document.body.appendChild(column);
+        this.classList.add('login-column');
 
         const mainImg = this.create('img') as HTMLImageElement;
         mainImg.src = 'assets/t_logo.png';
-        column.appendChild(mainImg);
+        this.appendChild(mainImg);
 
         const header = this.create('h2');
         header.innerText = 'Sign in to Telegram';
-        column.appendChild(header);
+        this.appendChild(header);
 
         const caption = this.create('p');
         caption.innerText = 'Please confirm your country and enter phone number.';
-        column.appendChild(caption);
+        this.appendChild(caption);
 
 
         const country = this.create('form');
-        column.appendChild(country);
+        this.appendChild(country);
 
         const countryCaption = this.createCaption(LoginPlaceholder.Country);
         country.appendChild(countryCaption);
 
         const button = this.create('button');
+        button.classList.add('country-button');
         country.appendChild(button);
 
         const buttonImg = this.create('img') as HTMLImageElement;
         buttonImg.src = CountryButton.Down;
-        buttonImg.classList.add('country-button');
+        buttonImg.classList.add('country-button-img');
         button.appendChild(buttonImg);
 
         const countryInput = this.create('input') as HTMLInputElement;
@@ -84,7 +84,7 @@ export class PhoneComponent extends HTMLElement {
             });
 
         const number = this.create('form');
-        column.appendChild(number);
+        this.appendChild(number);
 
         const numberInput = this.create('input') as HTMLInputElement;
         numberInput.type = 'tel';
@@ -101,13 +101,16 @@ export class PhoneComponent extends HTMLElement {
         const numberCaption = this.createCaption(LoginPlaceholder.Phone);
         number.appendChild(numberCaption);
 
+
+        const nextButton = this.create('button');
+        nextButton.classList.add('next', 'hide');
+        nextButton.innerText = 'NEXT';
+        this.appendChild(nextButton);
+
+
         const numberAchieveContent = () => {
             numberCaption.classList.remove('hide');
             numberPlus.classList.remove('hide');
-        };
-
-        const codeSearch = (number: string) => {
-
         };
 
         countryList.onmousedown = (ev: MouseEvent) => {
@@ -126,7 +129,7 @@ export class PhoneComponent extends HTMLElement {
         countryList.onmousemove = (ev: MouseEvent) => {
             const countryComponent = ev.target as CountryComponent;
 
-            if (lastCountryComponent !== countryComponent) {
+            if (lastCountryComponent && lastCountryComponent !== countryComponent) {
                 lastCountryComponent = countryComponent;
                 countryInput.placeholder = lastCountryComponent.country.name;
             }
@@ -154,6 +157,12 @@ export class PhoneComponent extends HTMLElement {
 
         numberInput.oninput = () => {
             const value = numberInput.value;
+
+            if (value.length > 10) {
+                this.show(nextButton);
+            } else {
+                this.hide(nextButton);
+            }
 
             if (value.length < 9) {
                 let found = false;
@@ -209,132 +218,45 @@ export class PhoneComponent extends HTMLElement {
             });
         };
 
+        const setNumber = (phone: string) => {
+            this.setNumber(phone).catch((error: Error) => {
+                const errorElement = document.createElement('p');
+                errorElement.innerText = error.message;
+                document.body.appendChild(errorElement);
+            });
+        };
+
+        nextButton.onclick = () => {
+            setNumber(numberInput.value);
+        };
+
         country.onsubmit = (ev: Event) => {
             ev.preventDefault();
-            // submit(input.value).catch((error: Error) => {
-            //     const errorElement = document.createElement('p');
-            //     errorElement.innerText = error.message;
-            //     document.body.appendChild(errorElement);
-            // });
+        };
+
+        number.onsubmit = (ev: Event) => {
+            ev.preventDefault();
+            const value = numberInput.value;
+
+            if (value.length > 10) setNumber(value);
         };
     }
 
-    css() {
-        this.innerHTML = `<style>
-    body {
-        font-family: 'Helvetica', 'Arial', sans-serif;
-    }
-
-    :root {
-        --my-form-widht: 60px;
-    }
-
-
-    .login-column {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    .country-button {
-        fill: rgb(83, 166, 243);
-    }
-    
-    .country:hover {
-        background-color: rgb(244, 244, 245);
-    }
-    
-    .country {
-        padding: 10px;
-        cursor: pointer;
-        z-index: 10;
-    }
-    
-    .flag-icon, .country-name, .country-code {
-        pointer-events: none;
-    }
-
-    .country-code {
-        float: right;
-    }
-    
-    .country-list {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        top: 30px;
-        width: 220px;
-        max-height: 400px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        border-radius: 8px;
-        z-index: 10;
-        background-color: white;
-        overflow-y: auto;
-    }
-    
-    .hide {
-        display: none;
-    }
-    
-    .number {
-        position: absolute;
-        left: 2px;
-        top: 2px;
-    }
-    
-    .caption {
-        position: absolute;
-        left: 2px;
-        top: 2px;
-        background-color: white;
-        font-size: 10px;
-    }
-    
-    form {
-        position: relative;
-    }
-    
-    button {
-        position: absolute;
-        right: 0px;
-        top: 0px;
-        border: none;
-        background-color: transparent;
-        border-radius: 50%;
-        height: 34px;
-        width: 34px;
-        z-index: -1;
-    }
-    
-    input {
-        padding: 10px;
-        border: solid 1px rgb(218, 220, 224);
-        border-radius: 8px;
-        font-size: 14px;
-        outline: none;
-        width: 200px;
-        background-color: transparent;
-        caret-color: rgb(83, 166, 243);
-    }
-    
-    .focus-caption {
-        color: rgb(57, 146, 233);
-    }
-    
-    input:focus {
-        border: solid 1px rgb(83, 166, 243);
-    }
-    
-    .phone-input:focus::placeholder {
-        color: transparent;
-    }
-</style>
-`;
-    }
 
     create(tag: string = 'div'): HTMLElement | HTMLImageElement | HTMLInputElement {
         return document.createElement(tag);
+    }
+
+    show(element) {
+        element.classList.remove('hide');
+    }
+
+    hide(element) {
+        element.classList.add('hide');
+    }
+
+    setNumber(phone: string): Promise<any> {
+        return tdlib.setAuthenticationPhoneNumber(phone);
     }
 
     createCaption(text: string) {

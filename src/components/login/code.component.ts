@@ -1,8 +1,12 @@
 import lottie from 'lottie-web';
+import {LoginMonkey} from "../../models/interface/login-monkey";
+import {UpdateAuthorizationState} from "../../models/auth/update-authorization-state";
 
 export class CodeComponent extends HTMLElement {
-    constructor() {
+    constructor(update: UpdateAuthorizationState) {
         super();
+
+        console.log(update);
 
         this.render();
     }
@@ -17,7 +21,7 @@ export class CodeComponent extends HTMLElement {
             renderer: 'svg',
             loop: true,
             autoplay: true,
-            path: 'assets/close.json' // the path to the animation json
+            path: 'assets/' + LoginMonkey.Idle // the path to the animation json
         });
 
         this.innerHTML = ``;
