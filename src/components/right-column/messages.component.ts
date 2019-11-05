@@ -7,12 +7,14 @@ import {Message} from "../../models/message/message";
 import {UpdateMessageSendSucceeded} from "../../models/message/update-message-send-succeeded";
 import {UpdateMessageContent} from "../../models/message/update-message-content";
 import {currentChat} from "../../current-chat";
+import {UpdateChatReadOutbox} from "../../models/chat/update-chat-read-outbox";
+import {ChatComponent} from "../left-column/chat.component";
 
 export class MessagesComponent extends HTMLElement {
     messagesContainer: HTMLElement;
     messages = new Map<number, MessageComponent>([]);
     canAppend = true;
-    readOutbox = true;
+    private readOutbox: boolean;
 
     constructor() {
         super();
@@ -139,7 +141,7 @@ export class MessagesComponent extends HTMLElement {
     }
 
     .check-mark-animate:after {
-        height: 0;
+        /*height: 0;*/
         animation: check-after 0.5s 550ms cubic-bezier(.4, .0, .23, 1) forwards;
     }
 
@@ -207,6 +209,31 @@ export class MessagesComponent extends HTMLElement {
         tdlib.chatLastMessage.subscribe((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
         tdlib.sendSucceeded.subscribe(update => this.updateMessageSendSucceed(update));
         tdlib.messageContent.subscribe(update => this.updateMessageContent(update));
+        tdlib.readOutbox.subscribe(update => this.updateChatReadOutbox(update));
+    }
+
+    updateChatReadOutbox(update: UpdateChatReadOutbox) {
+        if (currentChat.value.id === update.chat_id) {
+            let readOutbox = false;
+
+            for (const m of this.messages.values()) {
+                if (readOutbox) {
+                    if (m.checkContainer.childElementCount == 2) {
+                        break;
+                    } else {
+                        m.readOutboxAnimate();
+                    }
+                } else if (m.message.id === update.last_read_outbox_message_id) {
+                    readOutbox = true;
+
+                    if (m.checkContainer.childElementCount == 2) {
+                        break;
+                    } else {
+                        m.readOutboxAnimate();
+                    }
+                }
+            }
+        }
     }
 
     updateMessageContent(update: UpdateMessageContent) {

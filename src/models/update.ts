@@ -9,6 +9,7 @@ export enum Update {
     HavePendingNotifications = 'updateHavePendingNotifications',
     ChatReadOutbox = 'updateChatReadOutbox',
     ChatReadInbox = 'updateChatReadInbox',
+    ChatDraftMessage = 'updateChatDraftMessage',
     User = 'updateUser',
     NewChat = 'updateNewChat',
     ChatNotificationSettings = 'updateChatNotificationSettings',

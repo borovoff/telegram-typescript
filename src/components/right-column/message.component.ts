@@ -5,7 +5,7 @@ import {MessageText} from "../../models/message/message-text";
 export class MessageComponent extends HTMLElement {
     private _message: Message;
     private span: HTMLElement;
-    private checkContainer: HTMLElement;
+    checkContainer: HTMLElement;
 
     constructor(message: Message) {
         super();
@@ -59,13 +59,17 @@ export class MessageComponent extends HTMLElement {
         }
     }
 
-    addCheckMark(classes: string[]) {
+    private addCheckMark(classes: string[]) {
         const check = document.createElement('span');
         classes.forEach(c => check.classList.add(c));
         this.checkContainer.appendChild(check);
     }
 
     readOutbox() {
+        this.addCheckMark(['check-mark', 'check-mark-received'])
+    }
+
+    readOutboxAnimate() {
         this.addCheckMark(['check-mark', 'check-mark-received'])
     }
 

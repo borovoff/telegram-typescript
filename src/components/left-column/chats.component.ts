@@ -5,6 +5,7 @@ import {UpdateChatOrder} from "../../models/chat/update-chat-order";
 import {currentChatId} from "../../current-chat-id";
 import {ChatComponent} from "./chat.component";
 import {currentChat} from "../../current-chat";
+import {UpdateChatReadOutbox} from "../../models/chat/update-chat-read-outbox";
 
 export class ChatsComponent extends HTMLElement {
     chats = {};
@@ -35,7 +36,13 @@ export class ChatsComponent extends HTMLElement {
         tdlib.newChat.subscribe((chat: Chat) => this.newChat(chat));
         tdlib.chatLastMessage.subscribe((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
         tdlib.chatOrder.subscribe((chatOrder: UpdateChatOrder) => this.updateChatOrder(chatOrder));
+        tdlib.readOutbox.subscribe(update => this.updateChatReadOutbox(update));
         tdlib.getChats();
+    }
+
+    updateChatReadOutbox(update: UpdateChatReadOutbox) {
+        const chatComponent = this.chats[update.chat_id] as ChatComponent;
+        chatComponent.chat.last_read_outbox_message_id = update.last_read_outbox_message_id;
     }
 
     newChat(chat: Chat) {

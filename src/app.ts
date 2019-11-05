@@ -1,7 +1,10 @@
 import {tdlib} from "./tdlib";
+import 'flag-icon-css/css/flag-icon.min.css'
 import {AuthorizationState} from "./models/auth/authorization-state";
 import {MainComponent} from "./components/main.component";
 import {Error} from "./models/error";
+import {CodeComponent} from "./components/login/code.component";
+import {PhoneComponent} from "./components/login/phone.component";
 
 export class App {
     constructor() {
@@ -20,7 +23,9 @@ export class App {
                 tdlib.checkDatabaseEncryptionKey();
                 break;
             case AuthorizationState.WaitPhoneNumber:
-                this.renderForm('Phone number', phone => tdlib.setAuthenticationPhoneNumber(phone));
+                // this.renderForm('Phone number', phone => tdlib.setAuthenticationPhoneNumber(phone));
+                document.body.appendChild(new PhoneComponent());
+                // this.renderCode();
                 break;
             case AuthorizationState.WaitCode:
                 this.renderForm('Code', code => tdlib.checkAuthenticationCode(code));
@@ -45,6 +50,10 @@ export class App {
         while (document.body.firstChild) {
             document.body.firstChild.remove();
         }
+    }
+
+    renderCode() {
+        document.body.appendChild(new CodeComponent());
     }
 
     renderForm(titleValue: string, submit: (value: string) => Promise<Error>) {
