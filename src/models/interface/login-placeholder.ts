@@ -1,4 +1,6 @@
 export enum LoginPlaceholder {
     Country = 'Country',
-    Phone = 'Phone Number'
+    Phone = 'Phone Number',
+    Code = 'Code',
+    Password = 'Password'
 }

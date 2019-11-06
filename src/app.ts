@@ -3,8 +3,9 @@ import {AuthorizationState} from "./models/auth/authorization-state";
 import {MainComponent} from "./components/main.component";
 import {Error} from "./models/error";
 import {CodeComponent} from "./components/login/code.component";
-import {PhoneComponent} from "./components/login/phone.component";
+import {PhoneComponent} from "./components/login/phone/phone.component";
 import {UpdateAuthorizationState} from "./models/auth/update-authorization-state";
+import {PasswordComponent} from "./components/login/password.component";
 
 export class App {
     private login: HTMLElement;
@@ -42,7 +43,7 @@ export class App {
                 break;
             case AuthorizationState.WaitPassword:
                 this.clearLogin();
-                // this.login.appendChild(new Pass());
+                this.login.appendChild(new PasswordComponent());
                 // this.renderForm('Password', password => tdlib.checkAuthenticationPassword(password));
                 break;
             case AuthorizationState.WaitRegistration:
@@ -98,6 +99,10 @@ export class App {
 
     css() {
         document.body.innerHTML = `<style>
+    :root {
+        --invalid-color: rgb(211, 55, 55);
+    }
+    
     .login-column {
         display: flex;
         flex-direction: column;
@@ -205,6 +210,14 @@ export class App {
     
     .phone-input:focus::placeholder {
         color: transparent;
+    }
+
+    .invalid-input:focus {
+        border-color: var(--invalid-color);
+    }
+    
+    .invalid-caption {
+        color: var(--invalid-color);
     }
 </style>
 `;

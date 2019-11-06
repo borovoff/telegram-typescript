@@ -1,4 +1,4 @@
-import {ListCountry} from "../../models/login/list-country";
+import {ListCountry} from "../../../models/login/list-country";
 
 export class CountryComponent extends HTMLElement {
     country: ListCountry;
