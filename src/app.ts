@@ -6,6 +6,7 @@ import {CodeComponent} from "./components/login/code.component";
 import {PhoneComponent} from "./components/login/phone/phone.component";
 import {UpdateAuthorizationState} from "./models/auth/update-authorization-state";
 import {PasswordComponent} from "./components/login/password.component";
+import {RegistrationComponent} from "./components/login/registration.component";
 
 export class App {
     private login: HTMLElement;
@@ -26,6 +27,8 @@ export class App {
     }
 
     renderLogin(update: UpdateAuthorizationState) {
+        this.clearLogin();
+
         const type = update.authorization_state['@type'];
 
         switch (type) {
@@ -33,20 +36,18 @@ export class App {
                 tdlib.checkDatabaseEncryptionKey();
                 break;
             case AuthorizationState.WaitPhoneNumber:
-                this.clearLogin();
-                this.login.appendChild(new PhoneComponent());
+                // this.login.appendChild(new PhoneComponent());
+                this.login.appendChild(new RegistrationComponent());
                 break;
             case AuthorizationState.WaitCode:
-                this.clearLogin();
-                this.login.appendChild(new CodeComponent(update));
-                // this.renderForm('Code', code => tdlib.checkAuthenticationCode(code));
+                // this.login.appendChild(new CodeComponent(update));
+                this.login.appendChild(new RegistrationComponent());
                 break;
             case AuthorizationState.WaitPassword:
-                this.clearLogin();
                 this.login.appendChild(new PasswordComponent());
-                // this.renderForm('Password', password => tdlib.checkAuthenticationPassword(password));
                 break;
             case AuthorizationState.WaitRegistration:
+                this.login.appendChild(new RegistrationComponent());
                 break;
             case AuthorizationState.Ready:
                 this.renderMain();
@@ -101,6 +102,7 @@ export class App {
         document.body.innerHTML = `<style>
     :root {
         --invalid-color: rgb(211, 55, 55);
+        --form-color: rgb(83, 166, 243);
     }
     
     .login-column {
@@ -111,7 +113,7 @@ export class App {
     }
     
     .country-button-img {
-        fill: rgb(83, 166, 243);
+        fill: var(--form-color);
     }
     
     .country:hover {
@@ -150,7 +152,7 @@ export class App {
         width: 220px;
         height: 40px;
         border: none;
-        background-color: rgb(83, 166, 243);
+        background-color: var(--form-color);
         color: white;
         border-radius: 8px;
     }
@@ -197,7 +199,7 @@ export class App {
         outline: none;
         width: 200px;
         background-color: transparent;
-        caret-color: rgb(83, 166, 243);
+        caret-color: var(--form-color);
     }
     
     .focus-caption {
@@ -205,7 +207,7 @@ export class App {
     }
     
     input:focus {
-        border: solid 1px rgb(83, 166, 243);
+        border: solid 1px var(--form-color);
     }
     
     .phone-input:focus::placeholder {
@@ -218,6 +220,72 @@ export class App {
     
     .invalid-caption {
         color: var(--invalid-color);
+    }
+    
+    .photo-preview {
+        --img-diameter: 200px;
+        height: var(--img-diameter);
+        width: var(--img-diameter);
+        border-radius: 50%;
+        background-color: var(--form-color);
+        text-align: center;
+        line-height: var(--img-diameter);
+        cursor: pointer;
+    }
+    
+    .add-photo {
+        vertical-align: middle;
+    }
+    
+    .cancel-area {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+    }
+    
+    .cancel-area-grab {
+        cursor: grab;
+    }
+    
+    .photo-picker {
+        --diameter: 400px;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: var(--diameter);
+        height: var(--diameter);
+        margin-top: -200px;
+        margin-left: -200px;
+        box-shadow: 0 0 2000px 2000px rgba(0, 0, 0, 0.5);
+        background-color: white;
+        z-index: 1;
+    }
+    
+    .avatar-rect {
+        position: relative;
+        overflow: hidden;
+        width: 300px;
+        height: 300px;
+        margin: 50px;
+        background-color: transparent;
+        cursor: grab;
+    }
+
+    .avatar-img {
+        position: absolute;
+        z-index: -1;
+        left: 0;
+        top: 0;
+    }
+
+    .avatar-round {
+        position: relative;
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        box-shadow: 0 0 2000px 2000px rgba(255, 255, 255, 0.5);
     }
 </style>
 `;

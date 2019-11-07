@@ -1,11 +1,12 @@
 import {Error} from "../../../models/error";
 import {tdlib} from "../../../tdlib";
-import 'flag-icon-css/css/flag-icon.min.css'
 import {FormComponent} from "../form.component";
 import {CountryFormComponent} from "./country-form.component";
 import {PhoneFormComponent} from "./phone-form.component";
 import {LoginComponent} from "../login.component";
 import {LOGIN_TEXT} from "../../../models/interface/login-text";
+import {LoginButtonComponent} from "../login-button.component";
+import {LoginButtonText} from "../../../models/interface/login-button-text";
 
 
 export class PhoneComponent extends LoginComponent {
@@ -26,11 +27,8 @@ export class PhoneComponent extends LoginComponent {
         const phoneComponent = new PhoneFormComponent();
         this.appendChild(phoneComponent);
 
-        const nextButton = this.create('button');
-        nextButton.classList.add('next', 'hide');
-        nextButton.innerText = 'NEXT';
-        this.appendChild(nextButton);
-
+        const next = new LoginButtonComponent(LoginButtonText.Next);
+        this.appendChild(next);
 
         const setNumber = (phone: string) => {
             this.setNumber(phone).catch((error: Error) => {
@@ -47,7 +45,7 @@ export class PhoneComponent extends LoginComponent {
             if (value.length > 10) setNumber(value);
         };
 
-        nextButton.onclick = () => {
+        next.button.onclick = () => {
             setNumber(phoneComponent.input.value);
         };
 
@@ -59,9 +57,9 @@ export class PhoneComponent extends LoginComponent {
 
         phoneComponent.value.subscribe(v => {
             if (v.length > 10) {
-                FormComponent.show(nextButton);
+                FormComponent.show(next.button);
             } else {
-                FormComponent.hide(nextButton);
+                FormComponent.hide(next.button);
             }
 
             if (v.length < 9) {

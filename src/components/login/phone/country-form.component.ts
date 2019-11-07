@@ -1,5 +1,5 @@
 import {FormComponent} from "../form.component";
-import {CountryComponent} from "./country.component";
+import {CountryItemComponent} from "./country-item.component";
 import {COUNTRY_CODES} from "../../../constants/country_codes";
 import {LoginPlaceholder} from "../../../models/interface/login-placeholder";
 import {CountryButton} from "../../../models/interface/country-button";
@@ -32,7 +32,7 @@ export class CountryFormComponent extends FormComponent {
         this.form.appendChild(countryList);
 
 
-        const countryComponents: CountryComponent[] = [];
+        const countryComponents: CountryItemComponent[] = [];
         fetch('assets/i18n/en.json')
             .then(r => r.json())
             .then(r => {
@@ -45,7 +45,7 @@ export class CountryFormComponent extends FormComponent {
 
                     for (let i = 2; i < c.length; i++) {
                         const code = c[i].toString();
-                        const countryComponent = new CountryComponent(
+                        const countryComponent = new CountryItemComponent(
                             {name: name, code: code, iso: iso, lowName: name.toLowerCase()});
                         countryList.appendChild(countryComponent);
                         countryComponents.push(countryComponent);
@@ -56,7 +56,7 @@ export class CountryFormComponent extends FormComponent {
             });
 
         countryList.onmousedown = (ev: MouseEvent) => {
-            const countryComponent = ev.target as CountryComponent;
+            const countryComponent = ev.target as CountryItemComponent;
             const country = countryComponent.country;
             this.input.value = country.name;
 
@@ -65,9 +65,9 @@ export class CountryFormComponent extends FormComponent {
             FormComponent.show(this.caption);
         };
 
-        let lastCountryComponent: CountryComponent;
+        let lastCountryComponent: CountryItemComponent;
         countryList.onmousemove = (ev: MouseEvent) => {
-            const countryComponent = ev.target as CountryComponent;
+            const countryComponent = ev.target as CountryItemComponent;
 
             if (lastCountryComponent && lastCountryComponent !== countryComponent) {
                 lastCountryComponent = countryComponent;

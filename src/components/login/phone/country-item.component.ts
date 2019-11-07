@@ -1,6 +1,6 @@
 import {ListCountry} from "../../../models/login/list-country";
 
-export class CountryComponent extends HTMLElement {
+export class CountryItemComponent extends HTMLElement {
     country: ListCountry;
 
     constructor(country: ListCountry) {
@@ -26,4 +26,4 @@ export class CountryComponent extends HTMLElement {
     }
 }
 
-customElements.define('tg-country', CountryComponent);
+customElements.define('tg-country', CountryItemComponent);

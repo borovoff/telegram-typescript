@@ -5,6 +5,8 @@ import {FormComponent} from "./form.component";
 import {LoginPlaceholder} from "../../models/interface/login-placeholder";
 import {InputType} from "../../models/interface/input-type";
 import {tdlib} from "../../tdlib";
+import {Error} from "../../models/error";
+import {ErrorMessage} from "../../models/error-message";
 
 export class PasswordComponent extends MonkeyComponent {
     constructor() {
@@ -16,8 +18,15 @@ export class PasswordComponent extends MonkeyComponent {
         pass.form.onsubmit = () => {
             const value = pass.input.value;
 
-            if (value.length > 0) this.checkPass(value).catch();
-        }
+            if (value.length > 0) this.checkPass(value).catch((error: Error) => {
+                pass.setInvalid('Invalid Password');
+                if (error.message === ErrorMessage.PhoneCodeInvalid) {
+
+                }
+            });
+        };
+
+        pass.input.oninput = () => pass.removeInvalid(LoginPlaceholder.Password);
     }
 
     checkPass(password: string): Promise<any> {

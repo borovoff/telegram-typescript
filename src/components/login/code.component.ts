@@ -35,7 +35,6 @@ export class CodeComponent extends MonkeyComponent {
 
             if (value.length > 4) {
                 this.checkCode(value).catch((error: Error) => {
-                    console.log('error: ', error);
                     if (error.message === ErrorMessage.PhoneCodeInvalid) {
                         code.setInvalid('Invalid Code');
                     }
