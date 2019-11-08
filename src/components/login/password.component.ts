@@ -19,9 +19,16 @@ export class PasswordComponent extends MonkeyComponent {
             const value = pass.input.value;
 
             if (value.length > 0) this.checkPass(value).catch((error: Error) => {
-                pass.setInvalid('Invalid Password');
-                if (error.message === ErrorMessage.PhoneCodeInvalid) {
+                console.log('error: ', error);
 
+                pass.setInvalid('Invalid Password');
+
+                switch (error.message) {
+                    case ErrorMessage.PasswordHashInvalid:
+                        pass.setInvalid('Password Hash Invalid');
+                        break;
+                    default:
+                        break;
                 }
             });
         };

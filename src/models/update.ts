@@ -28,5 +28,6 @@ export enum Update {
     File = 'updateFile',
     MessageSendSucceeded = 'updateMessageSendSucceeded',
     MessageContent = 'updateMessageContent',
-    MessageEdited = 'updateMessageEdited'
+    MessageEdited = 'updateMessageEdited',
+    BasicGroupFullInfo = 'updateBasicGroupFullInfo'
 }

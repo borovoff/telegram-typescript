@@ -36,12 +36,10 @@ export class App {
                 tdlib.checkDatabaseEncryptionKey();
                 break;
             case AuthorizationState.WaitPhoneNumber:
-                // this.login.appendChild(new PhoneComponent());
-                this.login.appendChild(new RegistrationComponent());
+                this.login.appendChild(new PhoneComponent());
                 break;
             case AuthorizationState.WaitCode:
-                // this.login.appendChild(new CodeComponent(update));
-                this.login.appendChild(new RegistrationComponent());
+                this.login.appendChild(new CodeComponent(update));
                 break;
             case AuthorizationState.WaitPassword:
                 this.login.appendChild(new PasswordComponent());
@@ -278,12 +276,13 @@ export class App {
         z-index: -1;
         left: 0;
         top: 0;
+        transform-origin: left top;
     }
 
     .avatar-round {
         position: relative;
-        width: 200px;
-        height: 200px;
+        width: 300px;
+        height: 300px;
         border-radius: 50%;
         box-shadow: 0 0 2000px 2000px rgba(255, 255, 255, 0.5);
     }
