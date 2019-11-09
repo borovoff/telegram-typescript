@@ -1,9 +1,9 @@
 export enum WeekDay {
     Sun,
     Mon,
-    Tues,
+    Tue,
     Wed,
-    Thurs,
+    Thu,
     Fri,
     Sat
 }

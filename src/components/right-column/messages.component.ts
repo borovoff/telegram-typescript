@@ -95,7 +95,11 @@ export class MessagesComponent extends HTMLElement {
         if (messages.total_count > 0) {
             const height = this.messagesContainer.offsetHeight;
 
-            let last = messages.messages[0].is_outgoing !== topMessage.is_outgoing;
+            let last = false;
+            if (messages.messages[0].is_outgoing !== topMessage.is_outgoing) {
+                last = true;
+                this.messages.get(topMessage.id).classList.add('first');
+            }
 
             this.addMessages(messages, last);
 
@@ -123,8 +127,12 @@ export class MessagesComponent extends HTMLElement {
             messageComponent.addClasses(last, m.is_outgoing);
             this.messagesContainer.insertBefore(messageComponent, this.messagesContainer.firstChild);
 
-            const next = ++i;
-            if (next < messages.total_count) last = m.is_outgoing !== messages.messages[next].is_outgoing;
+            const next = i + 1;
+            last = false;
+            if (next < messages.total_count && m.is_outgoing !== messages.messages[next].is_outgoing) {
+                last = true;
+                messageComponent.classList.add('first');
+            }
 
             // this.minimizeWidth(messageComponent);
 
@@ -171,7 +179,10 @@ export class MessagesComponent extends HTMLElement {
             const previous = messageComponents[0] as MessageComponent;
 
             messageComponent.addClasses(true, m.is_outgoing);
-            if (m.is_outgoing === previous.message.is_outgoing) previous.classList.remove('last');
+            if (m.is_outgoing === previous.message.is_outgoing)
+                previous.classList.remove('last');
+            else
+                messageComponent.classList.add('first');
 
             this.unshift(messageComponents, messageComponent);
 
