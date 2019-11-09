@@ -1,8 +1,9 @@
 export class BaseHTMLElement extends HTMLElement {
-    constructor(style?: string) {
+    constructor() {
         super();
-        const shadow = this.attachShadow({mode: 'open'});
+    }
 
-        shadow.innerHTML = style;
+    create(tag: string = 'div'): HTMLElement | HTMLImageElement | HTMLInputElement {
+        return document.createElement(tag);
     }
 }

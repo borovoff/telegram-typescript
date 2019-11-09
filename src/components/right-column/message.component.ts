@@ -1,17 +1,20 @@
 import {Message} from '../../models/message/message';
 import {DateHelper} from "../../date-helper";
 import {MessageText} from "../../models/message/message-text";
+import {BaseHTMLElement} from "../base-html-element";
 
-export class MessageComponent extends HTMLElement {
+export class MessageComponent extends BaseHTMLElement {
     private _message: Message;
     private span: HTMLElement;
     checkContainer: HTMLElement;
 
     constructor(message: Message) {
         super();
-        this.innerHTML = `<style>
-</style>`;
         this._message = message;
+
+        const tail = this.create();
+        tail.classList.add('tail');
+        this.appendChild(tail);
 
         const textEl = document.createElement('div');
         const text = message.content.text;

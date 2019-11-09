@@ -3,10 +3,7 @@ import {tdlib} from "../../tdlib";
 
 export class ControlComponent extends BaseHTMLElement {
     constructor() {
-        super(`<style>
-            :host {
-                height: 100px;
-            }</style>`);
+        super();
         this.renderLogOut();
     }
 
@@ -14,7 +11,7 @@ export class ControlComponent extends BaseHTMLElement {
         const button = document.createElement('button');
         button.innerText = 'logout';
         button.addEventListener('click', _ => tdlib.logout());
-        this.shadowRoot.appendChild(button);
+        this.appendChild(button);
     }
 }
 

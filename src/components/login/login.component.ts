@@ -1,6 +1,7 @@
 import {LoginText} from "../../models/interface/login-text";
+import {BaseHTMLElement} from "../base-html-element";
 
-export class LoginComponent extends HTMLElement {
+export class LoginComponent extends BaseHTMLElement {
     header: HTMLElement;
     caption: HTMLElement;
 
@@ -17,9 +18,5 @@ export class LoginComponent extends HTMLElement {
 
         this.header.innerText = text ? text.header : '';
         this.caption.innerText = text? text.caption : '';
-    }
-
-    create(tag: string = 'div'): HTMLElement | HTMLImageElement | HTMLInputElement {
-        return document.createElement(tag);
     }
 }

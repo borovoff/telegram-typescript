@@ -1,4 +1,3 @@
-import {BaseHTMLElement} from "../base-html-element";
 import {Chat} from "../../models/chat/chat";
 import {tdlib} from "../../tdlib";
 import {fileStore} from "../../stores/file-store";
@@ -6,6 +5,7 @@ import {File} from "../../models/file/file";
 import {FilePart} from "../../models/file/file-part";
 import {Message} from "../../models/message/message";
 import {DateHelper} from "../../date-helper";
+import {ChatCounterComponent} from "./chat-counter.component";
 
 export class ChatComponent extends HTMLElement {
     message: HTMLElement;
@@ -27,46 +27,6 @@ export class ChatComponent extends HTMLElement {
     constructor(chat: Chat) {
         super();
 
-        this.innerHTML = `<style>
-    .top, .bottom {
-        display: flex;
-        color: white;
-    }
-
-    .top, .bottom {
-        justify-content: space-between;
-    }
-
-    .bottom {
-        height: 40px;
-        overflow-y: hidden;
-    }
-
-    .image, .letter-circle {
-        height: 50px;
-        width: 50px;
-        border-radius: 50%;
-    }
-    
-    .letter-circle {
-        text-align: center;
-        line-height: 52px;
-        font-size: 20px; 
-    }
-
-    .text {
-        display: flex;
-        flex-direction: column;
-        margin-left: 10px;
-        width: 220px;
-        color: white;
-    }
-
-    .counter, .read {
-        align-self: flex-end;
-    }
-</style>`;
-
         this.chat = chat;
 
         this.classList.add('chat');
@@ -74,7 +34,7 @@ export class ChatComponent extends HTMLElement {
         const photo = chat.photo;
         if (photo) {
             const img = this.create('img') as HTMLImageElement;
-            img.classList.add('image');
+            img.classList.add('chat-image');
             this.appendChild(img);
 
             img.src = photo.small.local.path;
@@ -94,33 +54,32 @@ export class ChatComponent extends HTMLElement {
         }
 
         const text = this.create();
-        text.classList.add('text');
+        text.classList.add('chat-text');
         this.appendChild(text);
 
         const top = this.create();
-        top.classList.add('top');
+        top.classList.add('chat-top');
         text.appendChild(top);
-
-        const bottom = this.create();
-        bottom.classList.add('bottom');
-        text.appendChild(bottom);
-
 
         const title = this.create();
         title.innerText = chat.title;
+        title.classList.add('chat-title');
         top.appendChild(title);
 
         this.read = this.create();
-        this.read.classList.add('read');
+        this.read.classList.add('chat-read');
         if (chat.is_marked_as_unread) this.read.innerText = 'U';
         top.appendChild(this.read);
 
+        const bottom = this.create();
+        bottom.classList.add('chat-bottom');
+        text.appendChild(bottom);
+
         this.message = this.create();
+        this.message.classList.add('chat-message');
         bottom.appendChild(this.message);
 
-        const counter = this.create();
-        counter.classList.add('counter');
-        counter.innerText = chat.unread_count.toString();
+        const counter = new ChatCounterComponent(chat.unread_count);
         bottom.appendChild(counter);
     }
 
@@ -147,7 +106,7 @@ export class ChatComponent extends HTMLElement {
 
         const text = message.content.text;
         if (text) {
-            this.message.innerText = text.text;
+            this.message.innerText = text.text.replace(/\n/g, ' ');
         }
 
         this.read.innerText = DateHelper.getTime(message.date);

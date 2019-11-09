@@ -3,17 +3,14 @@ import {tdlib} from "../../tdlib";
 
 export class InputComponent extends BaseHTMLElement {
     constructor() {
-        super(`<style>
-            :host {
-                
-        }</style>`);
+        super();
 
         const form = document.createElement('form');
         const input = document.createElement('input');
         form.appendChild(input);
         input.type = 'text';
 
-        this.shadowRoot.appendChild(form);
+        this.appendChild(form);
 
         form.addEventListener('submit', (ev: Event) => {
             ev.preventDefault();

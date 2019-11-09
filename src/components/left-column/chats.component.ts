@@ -12,26 +12,9 @@ export class ChatsComponent extends HTMLElement {
 
     constructor() {
         super();
-        this.attachShadow({mode: 'open'});
 
-        this.shadowRoot.innerHTML = `
-<style>
-    :host {
-        width: 300px;
-        overflow-y: auto;
-    }
-
-    .chat {
-        padding: 10px;
-        display: flex;
-        color: white;
-    }
-    
-    .current-chat {
-        background-color: rgb(63, 107, 149);
-    }
-</style>`;
-
+        this.classList.add('chats');
+        this.css();
 
         tdlib.newChat.subscribe((chat: Chat) => this.newChat(chat));
         tdlib.chatLastMessage.subscribe((update: UpdateChatLastMessage) => this.updateChatLastMessage(update));
@@ -85,13 +68,98 @@ export class ChatsComponent extends HTMLElement {
     };
 
     updateChatOrder(chatOrder: UpdateChatOrder | UpdateChatLastMessage) {
-        let chatElement = this.shadowRoot.getElementById(chatOrder.chat_id.toString()) as ChatComponent;
+        let chatElement = document.getElementById(chatOrder.chat_id.toString()) as ChatComponent;
 
         if (chatElement) {
-            this.shadowRoot.insertBefore(chatElement, this.shadowRoot.firstChild);
+            this.insertBefore(chatElement, this.firstChild);
         } else {
-            this.shadowRoot.appendChild(this.chats[chatOrder.chat_id]);
+            this.appendChild(this.chats[chatOrder.chat_id]);
         }
+    }
+
+    css() {
+        this.innerHTML = `
+<style>
+    .chats {
+        width: 300px;
+        overflow-y: auto;
+        background-color: white;
+    }
+
+    .chat {
+        padding: 10px;
+        display: flex;
+        color: black;
+    }
+    
+    .current-chat {
+        background-color: rgb(244, 244, 245);
+    }
+
+    .chat-image, .letter-circle {
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        color: white;
+    }
+
+    .letter-circle {
+        text-align: center;
+        line-height: 52px;
+        font-size: 20px;
+    }
+
+    .chat-text {
+        position: relative;
+        margin-left: 10px;
+        width: 200px;
+    }
+
+    .chat-top, .chat-bottom {
+        position: absolute;
+        display: flex;
+        width: 200px;
+    }
+    
+    .chat-top {
+        left: 0;
+        top: 0;
+    }
+
+    .chat-title {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100%;
+    }
+
+    .chat-read {
+        white-space: nowrap;
+        color: rgb(95, 99, 105);
+    }
+
+    .chat-message {
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100%;
+        color: rgb(112, 117, 121);
+    }
+    
+    .chat-bottom {
+        left: 0;
+        bottom: 0;
+        display: flex;
+        width: 200px;
+    }
+    
+    .chat-counter {
+        background-color: rgb(83, 203, 99);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 18px;
+    }
+</style>`;
     }
 }
 

@@ -1,7 +1,6 @@
 import {tdlib} from "./tdlib";
 import {AuthorizationState} from "./models/auth/authorization-state";
 import {MainComponent} from "./components/main.component";
-import {Error} from "./models/error";
 import {CodeComponent} from "./components/login/code.component";
 import {PhoneComponent} from "./components/login/phone/phone.component";
 import {UpdateAuthorizationState} from "./models/auth/update-authorization-state";
@@ -12,18 +11,16 @@ export class App {
     private login: HTMLElement;
 
     constructor() {
-        this.createTdlib();
+        tdlib.authState.subscribe(update => this.renderLogin(update));
         document.body.style.margin = '0';
         document.body.style.fontFamily = '"Helvetica", "Arial", sans-serif';
 
         this.css();
 
+        this.websocket();
+
         this.login = document.createElement('div');
         document.body.appendChild(this.login);
-    }
-
-    createTdlib() {
-        tdlib.authState.subscribe(update => this.renderLogin(update));
     }
 
     renderLogin(update: UpdateAuthorizationState) {
@@ -51,7 +48,7 @@ export class App {
                 this.renderMain();
                 break;
             case AuthorizationState.Closed:
-                this.createTdlib();
+                // TODO: reinit tdlib
                 break;
             default:
                 break;
@@ -70,25 +67,48 @@ export class App {
         }
     }
 
-    renderForm(titleValue: string, submit: (value: string) => Promise<Error>) {
-        const form = document.createElement('form');
-        const input = document.createElement('input');
-        const title = document.createElement('p');
-        title.innerText = titleValue;
-        form.appendChild(title);
-        form.appendChild(input);
-        input.type = 'text';
+    websocket() {
+        const start = [0xEF, 0x0A];
+        const authKeyId = [0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00];
+        const messageId = [0x4A, 0x96, 0x70, 0x27, 0xC4, 0x7A, 0xE5, 0x51];
+        const messageLength = [0x14, 0x00, 0x00, 0x00];
+        const reqPq = [0xbe, 0x7e, 0x8e, 0xf1];
+        const nonce = [
+            0x3E, 0x05, 0x49, 0x82, 0x8C, 0xCA, 0x27, 0xE9,
+            0x66, 0xB3, 0x01, 0xA4, 0x8F, 0xEC, 0xE2, 0xFC
+        ];
 
-        form.addEventListener('submit', (ev: Event) => {
-            ev.preventDefault();
-            submit(input.value).catch((error: Error) => {
-                const errorElement = document.createElement('p');
-                errorElement.innerText = error.message;
-                document.body.appendChild(errorElement);
-            });
-        });
+        const message = start.concat(authKeyId, messageId, messageLength, reqPq, nonce);
 
-        document.body.appendChild(form);
+        const myArray = new ArrayBuffer(50);
+        const longInt8View = new Uint8Array(myArray);
+
+        for (let i = 0; i < longInt8View.length; i++) {
+            longInt8View[i] = message[i];
+        }
+
+        const socket = new WebSocket('wss://venus.web.telegram.org:443/apiws', 'binary');
+        // const socket = new WebSocket('wss://echo.websocket.org', 'binary');
+
+        console.error('before list');
+        socket.onopen = (event) => {
+            console.error('message: ', myArray);
+            socket.send(myArray);
+        };
+
+        socket.onerror = (err) => {
+            console.error(err);
+        };
+
+        socket.onmessage = (event) => {
+            console.error('MESSAGE: ', event.data);
+        };
+    }
+
+    hexToBytes(hex) {
+        for (var bytes = [], c = 0; c < hex.length; c += 2)
+            bytes.push(parseInt(hex.substr(c, 2), 16));
+        return bytes;
     }
 
     renderMain() {

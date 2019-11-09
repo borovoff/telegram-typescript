@@ -8,7 +8,6 @@ import {UpdateMessageSendSucceeded} from "../../models/message/update-message-se
 import {UpdateMessageContent} from "../../models/message/update-message-content";
 import {currentChat} from "../../current-chat";
 import {UpdateChatReadOutbox} from "../../models/chat/update-chat-read-outbox";
-import {ChatComponent} from "../left-column/chat.component";
 
 export class MessagesComponent extends HTMLElement {
     messagesContainer: HTMLElement;
@@ -18,170 +17,7 @@ export class MessagesComponent extends HTMLElement {
 
     constructor() {
         super();
-        this.innerHTML = `<style>
-    .messages {
-        display: flex;
-        flex-direction: column;
-        width: calc(100% - 13px);
-        margin: 5px;
-    }
-
-    .message {
-        max-width: 500px;
-        border-radius: 20px;
-        color: white;
-        padding: 10px 16px;
-        margin: 2px;
-        word-break: break-word;
-        position: relative;
-    }
-
-    .message-text {
-        overflow: auto;
-    }
-
-    .float-container {
-        float: right;
-        margin-left: 10px;
-        display: flex;
-    }
-
-    .message-date {
-    }
-
-    .stranger {
-        align-self: flex-start;
-        background-color: rgb(34, 48, 63);
-    }
-
-    .my {
-        align-self: flex-end;
-        background-color: rgb(63, 107, 149);
-    }
-
-    .my.last:before, .my.last:after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        height: 20px;
-    }
-
-    .my.last:before {
-        z-index: 0;
-        right: -8px;
-        width: 20px;
-        background: rgb(63, 107, 149);
-        border-bottom-left-radius: 15px;
-    }
-
-    .my.last:after {
-        z-index: 1;
-        right: -10px;
-        width: 10px;
-        background: rgb(24, 34, 45);
-        border-bottom-left-radius: 10px;
-    }
-
-    .stranger.last:before, .stranger.last:after {
-        content: "";
-        position: absolute;
-        bottom: 0;
-        height: 20px;
-    }
-
-    .stranger.last:before {
-        z-index: 0;
-        left: -7px;
-        width: 20px;
-        background: rgb(34, 48, 63);
-        border-bottom-right-radius: 15px;
-    }
-
-    .stranger.last:after {
-        z-index: 1;
-        left: -10px;
-        width: 10px;
-        background: rgb(24, 34, 45);
-        border-bottom-right-radius: 10px;
-    }
-    
-    .check-container {
-        width: 20px;
-        height: 18px;
-        position: relative;
-        margin-left: 6px;
-    }
-
-    .check-mark {
-        display: inline-block;
-        width: 0;
-        height: 10px;
-        transform: rotate(45deg);
-    }
-
-    .check-mark-received {
-        margin-left: 2px;
-    }
-
-    .check-mark:before,
-    .check-mark:after {
-        content: "";
-        position: absolute;
-        background-color: white;
-    }
-
-    .check-mark:after {
-        width: 1px;
-        left: 0;
-        bottom: 5px;
-    }
-
-    .check-mark:after {
-        height: 10px;
-    }
-
-    .check-mark-animate:after {
-        /*height: 0;*/
-        animation: check-after 0.5s 550ms cubic-bezier(.4, .0, .23, 1) forwards;
-    }
-
-    .check-mark:before {
-        height: 1px;
-        left: -3px;
-        top: 4px;
-    }
-
-    .check-mark:before {
-        width: 4px;
-    }
-
-    .check-mark-animate:before {
-        width: 0;
-        animation: check-before 0.3s 250ms cubic-bezier(.4, .0, .23, 1) forwards;
-    }
-
-    .check-mark-received:before {
-        display: none;
-    }
-
-    @keyframes check-before {
-        from {
-            width: 0;
-        }
-        to {
-            width: 4px;
-        }
-    }
-
-    @keyframes check-after {
-        from {
-            height: 0;
-        }
-        to {
-            height: 10px;
-        }
-    }
-</style>`;
+        this.css();
 
         const style = this.style;
         style.overflowY = 'auto';
@@ -346,6 +182,266 @@ export class MessagesComponent extends HTMLElement {
                 this.messagesContainer.appendChild(messageComponent);
             }
         }
+    }
+
+    css() {
+        this.innerHTML = `<style>
+    .messages {
+        display: flex;
+        flex-direction: column;
+        width: calc(100% - 16px);
+        margin: 5px;
+    }
+
+    .message {
+        max-width: 500px;
+        color: black;
+        padding: 10px 16px;
+        margin: 2px;
+        word-break: break-word;
+        position: relative;
+    }
+
+    .message-text {
+        overflow: auto;
+    }
+
+    .float-container {
+        float: right;
+        margin-left: 10px;
+        display: flex;
+    }
+
+    .message-date {
+    }
+    
+    :root {
+        --stranger-background: white;
+        --chat-background: rgb(230, 235, 238);
+        --my-background: rgb(238, 254, 233);
+    }
+
+    .stranger {
+        align-self: flex-start;
+        background-color: var(--stranger-background);
+        border-radius: 6px 12px 12px 6px;
+    }
+
+    .my {
+        align-self: flex-end;
+        background-color: var(--my-background);
+        border-radius: 12px 6px 6px 12px;
+    }
+    
+    .my.last {
+        border-bottom-right-radius: 0;
+    }
+    
+    .stranger.last {
+        border-bottom-left-radius: 0;
+    }
+    
+    .my.first {
+        border-top-right-radius: 12px;
+    }
+
+    .stranger.first {
+        border-top-left-radius: 12px;
+    }
+
+    /*.my.last:before, .my.last:after {*/
+    /*    content: "";*/
+    /*    position: absolute;*/
+    /*    bottom: 0;*/
+    /*    height: 20px;*/
+    /*}*/
+    
+    /*.my.last:before {*/
+    /*    z-index: 0;*/
+    /*    right: -8px;*/
+    /*    width: 20px;*/
+    /*    background: rgb(63, 107, 149);*/
+    /*    border-bottom-left-radius: 15px;*/
+    /*}*/
+    
+    /*.my.last:after {*/
+    /*    z-index: 1;*/
+    /*    right: -10px;*/
+    /*    width: 10px;*/
+    /*    background: rgb(24, 34, 45);*/
+    /*    border-bottom-left-radius: 10px;*/
+    /*}*/
+
+    /*.stranger.last:before, .stranger.last:after {*/
+    /*    content: "";*/
+    /*    position: absolute;*/
+    /*    bottom: 0;*/
+    /*    height: 20px;*/
+    /*}*/
+    
+    /*.stranger.last:before {*/
+    /*    z-index: 0;*/
+    /*    left: -7px;*/
+    /*    width: 20px;*/
+    /*    background: rgb(34, 48, 63);*/
+    /*    border-bottom-right-radius: 15px;*/
+    /*}*/
+    
+    /*.stranger.last:after {*/
+    /*    z-index: 1;*/
+    /*    left: -10px;*/
+    /*    width: 10px;*/
+    /*    background: rgb(24, 34, 45);*/
+    /*    border-bottom-right-radius: 10px;*/
+    /*}*/
+
+    .stranger.last > .tail {
+        position: absolute;
+        left: -7px;
+        bottom: 0px;
+        height: 20px;
+        width: 7px;
+        border-radius: 0 0 0 1px / 0 0 0 4px;
+        background-color: var(--stranger-background);
+        z-index: -1;
+    }
+
+    .stranger.last > .tail:before {
+        content: '';
+        position: absolute;
+        left: 0px;
+        bottom: 0px;
+        width: 2px;
+        height: 2px;
+        border-radius: 10px;
+        z-index: -1;
+        background-color: var(--stranger-background);
+    }
+
+    .stranger.last > .tail:after {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: -4px;
+        width: 13px;
+        height: 25px;
+        border-radius: 0 0 100% 0 / 0 0 86% 0;
+        z-index: 16;
+        background-color: var(--chat-background);
+    }
+
+    .my.last > .tail {
+        position: absolute;
+        right: -7px;
+        bottom: 0px;
+        height: 20px;
+        width: 7px;
+        border-radius: 0 0 1px 0 / 0 0 4px 0;
+        background-color: var(--my-background);
+        z-index: -1;
+    }
+
+    .my.last > .tail:before {
+        content: '';
+        position: absolute;
+        left: 5px;
+        bottom: 0px;
+        width: 2px;
+        height: 2px;
+        border-radius: 10px;
+        z-index: -1;
+        background-color: var(--my-background);
+    }
+
+    .my.last > .tail:after {
+        content: '';
+        position: absolute;
+        right: -6px;
+        top: -4px;
+        width: 13px;
+        height: 25px;
+        border-radius: 0 0 0 100% / 0 0 0 86%;
+        z-index: 16;
+        background-color: var(--chat-background);
+    }
+    
+    .check-container {
+        width: 20px;
+        height: 18px;
+        position: relative;
+        margin-left: 6px;
+    }
+
+    .check-mark {
+        display: inline-block;
+        width: 0;
+        height: 10px;
+        transform: rotate(45deg);
+    }
+
+    .check-mark-received {
+        margin-left: 2px;
+    }
+
+    .check-mark:before,
+    .check-mark:after {
+        content: "";
+        position: absolute;
+        background-color: white;
+    }
+
+    .check-mark:after {
+        width: 1px;
+        left: 0;
+        bottom: 5px;
+    }
+
+    .check-mark:after {
+        height: 10px;
+    }
+
+    .check-mark-animate:after {
+        /*height: 0;*/
+        animation: check-after 0.5s 550ms cubic-bezier(.4, .0, .23, 1) forwards;
+    }
+
+    .check-mark:before {
+        height: 1px;
+        left: -3px;
+        top: 4px;
+    }
+
+    .check-mark:before {
+        width: 4px;
+    }
+
+    .check-mark-animate:before {
+        width: 0;
+        animation: check-before 0.3s 250ms cubic-bezier(.4, .0, .23, 1) forwards;
+    }
+
+    .check-mark-received:before {
+        display: none;
+    }
+
+    @keyframes check-before {
+        from {
+            width: 0;
+        }
+        to {
+            width: 4px;
+        }
+    }
+
+    @keyframes check-after {
+        from {
+            height: 0;
+        }
+        to {
+            height: 10px;
+        }
+    }
+</style>`;
     }
 }
 

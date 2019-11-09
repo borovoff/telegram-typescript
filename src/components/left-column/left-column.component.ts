@@ -4,18 +4,19 @@ import {ControlComponent} from "./control.component";
 export class LeftColumnComponent extends HTMLElement {
     constructor() {
         super();
-        const shadow = this.attachShadow({mode: 'open'});
 
         const style = document.createElement('style');
         style.textContent = `
-        :host {
+        .left-column {
             display: flex;
             flex-direction: column;
         }`;
 
-        shadow.appendChild(style);
-        shadow.appendChild(new ChatsComponent());
-        shadow.appendChild(new ControlComponent());
+        this.classList.add('left-column');
+
+        this.appendChild(style);
+        this.appendChild(new ChatsComponent());
+        this.appendChild(new ControlComponent());
     }
 
 }
