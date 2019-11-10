@@ -181,14 +181,14 @@ export class App {
     
     .number {
         position: absolute;
-        left: 2px;
-        top: 2px;
+        left: 10px;
+        top: 12px;
     }
     
     .caption {
         position: absolute;
-        left: 2px;
-        top: 2px;
+        left: 12px;
+        top: -4px;
         background-color: white;
         font-size: 10px;
     }
@@ -230,6 +230,11 @@ export class App {
     
     .phone-input:focus::placeholder {
         color: transparent;
+    }
+    
+    .phone-input:focus {
+        padding-left: 22px;
+        width: 188px;
     }
 
     .invalid-input:focus {

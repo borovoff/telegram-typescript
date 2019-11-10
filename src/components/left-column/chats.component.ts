@@ -82,8 +82,8 @@ export class ChatsComponent extends HTMLElement {
 <style>
     .chats {
         width: 300px;
+        height: calc(100% - 50px);
         overflow-y: auto;
-        background-color: white;
     }
 
     .chat {

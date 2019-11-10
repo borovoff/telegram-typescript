@@ -1,17 +1,19 @@
 import {BaseHTMLElement} from "../base-html-element";
 import {tdlib} from "../../tdlib";
+import {MenuButtonComponent} from "./menu-button.component";
+import {SearchComponent} from "./search.component";
 
 export class ControlComponent extends BaseHTMLElement {
     constructor() {
         super();
-        this.renderLogOut();
-    }
 
-    renderLogOut() {
-        const button = document.createElement('button');
-        button.innerText = 'logout';
-        button.addEventListener('click', _ => tdlib.logout());
-        this.appendChild(button);
+        const menu = new MenuButtonComponent();
+        this.appendChild(menu);
+
+        const search = new SearchComponent();
+        this.appendChild(search);
+
+        this.classList.add('control-row')
     }
 }
 

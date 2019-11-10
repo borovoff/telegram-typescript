@@ -5,18 +5,23 @@ export class LeftColumnComponent extends HTMLElement {
     constructor() {
         super();
 
-        const style = document.createElement('style');
-        style.textContent = `
-        .left-column {
-            display: flex;
-            flex-direction: column;
-        }`;
+        this.innerHTML = `<style>
+    .left-column {
+        display: flex;
+        flex-direction: column;
+        background-color: white;
+    }
+    
+    .control-row {
+        display: flex;
+        height: 50px;;
+    }
+</style>`;
 
         this.classList.add('left-column');
 
-        this.appendChild(style);
-        this.appendChild(new ChatsComponent());
         this.appendChild(new ControlComponent());
+        this.appendChild(new ChatsComponent());
     }
 
 }

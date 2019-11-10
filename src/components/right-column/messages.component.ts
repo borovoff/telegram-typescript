@@ -200,8 +200,8 @@ export class MessagesComponent extends HTMLElement {
     .messages {
         display: flex;
         flex-direction: column;
-        width: calc(100% - 16px);
-        margin: 5px;
+        width: calc(100% - 21px);
+        margin: 10px;
     }
 
     .message {
@@ -211,6 +211,8 @@ export class MessagesComponent extends HTMLElement {
         margin: 2px;
         word-break: break-word;
         position: relative;
+        box-shadow: 0 1px 2px var(--message-shadow);
+        z-index: 0;
     }
 
     .message-text {
@@ -230,6 +232,7 @@ export class MessagesComponent extends HTMLElement {
         --stranger-background: white;
         --chat-background: rgb(230, 235, 238);
         --my-background: rgb(238, 254, 233);
+        --message-shadow: rgb(204, 211, 216);
     }
 
     .stranger {
@@ -305,22 +308,27 @@ export class MessagesComponent extends HTMLElement {
     /*    background: rgb(24, 34, 45);*/
     /*    border-bottom-right-radius: 10px;*/
     /*}*/
+    
+    .tail {
+        
+    }
 
     .stranger.last > .tail {
         position: absolute;
-        left: -7px;
+        left: -8px;
         bottom: 0px;
         height: 20px;
-        width: 7px;
+        width: 9px;
         border-radius: 0 0 0 1px / 0 0 0 4px;
         background-color: var(--stranger-background);
         z-index: -1;
+        box-shadow: -1px 1px 2px  var(--message-shadow);
     }
 
     .stranger.last > .tail:before {
         content: '';
         position: absolute;
-        left: 0px;
+        left: 1px;
         bottom: 0px;
         width: 2px;
         height: 2px;
@@ -332,13 +340,14 @@ export class MessagesComponent extends HTMLElement {
     .stranger.last > .tail:after {
         content: '';
         position: absolute;
-        right: 0;
+        right: 1px;
         top: -4px;
         width: 13px;
         height: 25px;
         border-radius: 0 0 100% 0 / 0 0 86% 0;
         z-index: 16;
         background-color: var(--chat-background);
+        box-shadow: inset -1px 0 2px -1px var(--message-shadow);
     }
 
     .my.last > .tail {
@@ -346,16 +355,17 @@ export class MessagesComponent extends HTMLElement {
         right: -7px;
         bottom: 0px;
         height: 20px;
-        width: 7px;
+        width: 8px;
         border-radius: 0 0 1px 0 / 0 0 4px 0;
         background-color: var(--my-background);
         z-index: -1;
+        box-shadow: 1px 1px 2px var(--message-shadow);
     }
 
     .my.last > .tail:before {
         content: '';
         position: absolute;
-        left: 5px;
+        left: 6px;
         bottom: 0px;
         width: 2px;
         height: 2px;
@@ -374,6 +384,7 @@ export class MessagesComponent extends HTMLElement {
         border-radius: 0 0 0 100% / 0 0 0 86%;
         z-index: 16;
         background-color: var(--chat-background);
+        box-shadow: inset 1px 0 2px -1px var(--message-shadow);
     }
     
     .check-container {
