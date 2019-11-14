@@ -8,19 +8,23 @@ export class CountryItemComponent extends HTMLElement {
 
         this.country = country;
 
-        const flag = document.createElement('span');
-        flag.classList.add('flag-icon', 'flag-icon-' + country.iso);
-        this.appendChild(flag);
+        const container = document.createElement('div');
+        container.classList.add('country-item');
+        this.appendChild(container);
 
-        const text = document.createElement('span');
+        const flag = document.createElement('div');
+        flag.classList.add('flag-icon', 'flag-icon-' + country.iso);
+        container.appendChild(flag);
+
+        const text = document.createElement('div');
         text.innerText = country.name;
         text.classList.add('country-name');
-        this.appendChild(text);
+        container.appendChild(text);
 
-        const code = document.createElement('span');
+        const code = document.createElement('div');
         code.innerText = country.code;
         code.classList.add('country-code');
-        this.appendChild(code);
+        container.appendChild(code);
 
         this.classList.add('country');
     }

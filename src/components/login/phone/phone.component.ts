@@ -7,18 +7,17 @@ import {LoginComponent} from "../login.component";
 import {LOGIN_TEXT} from "../../../models/interface/login-text";
 import {LoginButtonComponent} from "../login-button.component";
 import {LoginButtonText} from "../../../models/interface/login-button-text";
+import {Checkbox} from "../../../models/interface/checkbox";
 
 
 export class PhoneComponent extends LoginComponent {
-    constructor() {
+    constructor(editPhone?: string) {
         super(LOGIN_TEXT.phone);
 
-        this.render();
-    }
-
-    render() {
         const mainImg = this.create('img') as HTMLImageElement;
-        mainImg.src = 'assets/t_logo.png';
+        mainImg.src = 'assets/Telegram_2019_Logo.svg';
+        mainImg.width = 160;
+        mainImg.classList.add('main-logo');
         this.insertBefore(mainImg, this.firstChild);
 
         const countryComponent = new CountryFormComponent();
@@ -26,6 +25,25 @@ export class PhoneComponent extends LoginComponent {
 
         const phoneComponent = new PhoneFormComponent();
         this.appendChild(phoneComponent);
+
+        let keepSigned = true;
+        const checkbox = this.create();
+        checkbox.classList.add('login-checkbox');
+        this.appendChild(checkbox);
+
+        const checkboxImg = document.createElement('img');
+        checkboxImg.src = keepSigned ? Checkbox.On : Checkbox.Empty;
+        checkboxImg.classList.add('checkbox-img');
+        checkbox.appendChild(checkboxImg);
+
+        const checkboxCaption = this.create();
+        checkboxCaption.innerText = 'Keep me signed in';
+        checkbox.appendChild(checkboxCaption);
+
+        checkboxImg.onclick = () => {
+            keepSigned = !keepSigned;
+            checkboxImg.src = keepSigned ? Checkbox.On : Checkbox.Empty;
+        };
 
         const next = new LoginButtonComponent(LoginButtonText.Next);
         this.appendChild(next);
@@ -62,27 +80,33 @@ export class PhoneComponent extends LoginComponent {
                 FormComponent.hide(next.button);
             }
 
-            if (v.length < 9) {
-                let found = false;
+            let found = false;
 
-                for (let i = v.length; i > 0; i--) {
-                    const code = v.slice(0, i);
-                    const intCode = FormComponent.getIntCode(code);
+            for (let i = v.length; i > 0; i--) {
+                const code = v.slice(0, i);
+                const intCode = FormComponent.getIntCode(code);
 
-                    if (countryComponent.countryCodes.has(intCode)) {
-                        countryComponent.input.value = countryComponent.countryCodes.get(intCode);
-                        FormComponent.show(countryComponent.caption);
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found) {
-                    countryComponent.input.value = '';
-                    FormComponent.hide(countryComponent.caption);
+                if (countryComponent.countryCodes.has(intCode)) {
+                    countryComponent.input.value = countryComponent.countryCodes.get(intCode);
+                    FormComponent.show(countryComponent.caption);
+                    found = true;
+                    break;
                 }
             }
-        })
+
+            if (!found) {
+                countryComponent.input.value = '';
+                FormComponent.hide(countryComponent.caption);
+            }
+        });
+
+
+        if (editPhone) {
+            countryComponent.countryListFetched.subscribe(() => {
+                phoneComponent.input.value = editPhone;
+                phoneComponent.value.value = editPhone;
+            });
+        }
     }
 
     setNumber(phone: string): Promise<any> {

@@ -18,15 +18,22 @@ export class PhoneFormComponent extends FormComponent {
         this.plus.classList.add('number', 'hide');
         this.form.appendChild(this.plus);
 
-        this.input.addEventListener('focus', () => this.numberAchieveContent());
+        this.input.addEventListener('focus', () => {
+            this.numberAchieveContent();
+            this.input.classList.add('phone-input-focus');
+        });
 
         this.input.addEventListener('blur', () => {
             if (!this.input.value) {
                 FormComponent.hide(this.plus);
+                this.input.classList.remove('phone-input-focus');
             }
         });
 
-        this.input.oninput = () => this.value.value = this.input.value;
+        this.input.oninput = () => {
+            this.value.value = this.input.value;
+            FormComponent.show(this.caption);
+        }
     }
 
     numberAchieveContent() {

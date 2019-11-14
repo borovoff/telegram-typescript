@@ -10,12 +10,13 @@ export class CountryFormComponent extends FormComponent {
     buttonImg: HTMLImageElement;
     countryCodes = new Map<number, string>();
     countryCode: UpdateListener<string> = new UpdateListener();
+    countryListFetched: UpdateListener<boolean> = new UpdateListener();
 
     constructor() {
         super(LoginPlaceholder.Country, InputType.Text);
 
         const button = this.create('button');
-        button.classList.add('country-button');
+        button.classList.add('country-button', 'form-button');
         this.form.appendChild(button);
 
         this.buttonImg = this.create('img') as HTMLImageElement;
@@ -53,6 +54,8 @@ export class CountryFormComponent extends FormComponent {
                         this.countryCodes.set(FormComponent.getIntCode(code), name);
                     }
                 });
+
+                this.countryListFetched.value = true;
             });
 
         countryList.onmousedown = (ev: MouseEvent) => {
@@ -69,7 +72,7 @@ export class CountryFormComponent extends FormComponent {
         countryList.onmousemove = (ev: MouseEvent) => {
             const countryComponent = ev.target as CountryItemComponent;
 
-            if (lastCountryComponent && lastCountryComponent !== countryComponent) {
+            if (countryComponent.country && lastCountryComponent !== countryComponent) {
                 lastCountryComponent = countryComponent;
                 this.input.placeholder = lastCountryComponent.country.name;
             }
@@ -100,7 +103,7 @@ export class CountryFormComponent extends FormComponent {
                 const country = c.country;
                 const value = this.input.value.toLowerCase();
 
-                if (country.lowName.includes(value) || country.code.includes(value)) {
+                if (country.lowName.slice(0, value.length) === value || country.code.includes(value)) {
                     c.classList.remove('hide');
                 } else {
                     c.classList.add('hide');
@@ -110,6 +113,16 @@ export class CountryFormComponent extends FormComponent {
 
         this.form.onsubmit = (ev: Event) => {
             ev.preventDefault();
+
+            for (const comp of countryComponents) {
+                if (!comp.classList.contains('hide')) {
+                    const country = comp.country;
+
+                    this.input.value = country.name;
+                    this.countryCode.value = country.code.slice(1);
+                    break;
+                }
+            }
         };
     }
 }

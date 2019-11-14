@@ -21,7 +21,6 @@
     "webpack-merge": "^4.2.2"
   },
   "dependencies": {
-    "flag-icon-css": "^3.4.5",
     "lottie-web": "^5.5.9",
     "tdweb": "^1.5.0"
   }

@@ -8,7 +8,7 @@ export class MenuButtonComponent extends BaseHTMLElement {
         this.css();
 
         const button = this.create('button');
-        // button.onclick = () => tdlib.logout();
+        button.onclick = () => tdlib.logout();
         button.classList.add('menu-button');
         this.appendChild(button);
 

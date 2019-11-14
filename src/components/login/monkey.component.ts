@@ -1,28 +1,23 @@
 import {LoginComponent} from "./login.component";
-import lottie from "lottie-web";
 import {LoginText} from "../../models/interface/login-text";
+import lottie from "lottie-web";
+import {LoginMonkey} from "../../models/interface/login-monkey";
+
 
 export class MonkeyComponent extends LoginComponent {
     animationContainer: HTMLElement;
+    lottie;
 
-    constructor(animationName: string, text?: LoginText) {
+    constructor(animationNames: LoginMonkey[], text?: LoginText) {
         super(text);
 
-        this.animationContainer = this.create();
-        this.insertBefore(this.animationContainer, this.firstChild);
-        this.loadAnimation(animationName)
-    }
-
-    loadAnimation(animationName: string) {
-        while (this.animationContainer.firstChild)
-            this.animationContainer.firstChild.remove();
-
-        lottie.loadAnimation({
-            container: this.animationContainer, // the dom element that will contain the animation
-            renderer: 'svg',
-            loop: true,
-            autoplay: true,
-            path: 'assets/' + animationName // the path to the animation json
+        import(/* webpackPrefetch: true */ "lottie-web").then(lottie => {
+            this.lottie = lottie;
+            // this.loadAnimation(animationNames);
         });
+
+        this.animationContainer = this.create();
+        this.animationContainer.classList.add('monkey-face');
+        this.insertBefore(this.animationContainer, this.firstChild);
     }
 }

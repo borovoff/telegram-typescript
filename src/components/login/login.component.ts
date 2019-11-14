@@ -10,10 +10,12 @@ export class LoginComponent extends BaseHTMLElement {
 
         this.classList.add('login-column');
 
-        this.header = this.create('h2');
+        this.header = this.create('h1');
+        this.header.classList.add('login-header');
         this.appendChild(this.header);
 
         this.caption = this.create('p');
+        this.caption.classList.add('login-caption');
         this.appendChild(this.caption);
 
         this.header.innerText = text ? text.header : '';

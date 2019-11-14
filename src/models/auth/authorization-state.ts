@@ -5,5 +5,8 @@ export enum AuthorizationState {
     WaitRegistration = 'authorizationStateWaitRegistration',
     WaitPassword = 'authorizationStateWaitPassword',
     Ready = 'authorizationStateReady',
-    Closed = 'authorizationStateClosed'
+    Closed = 'authorizationStateClosed',
+    LoggingOut = 'authorizationStateLoggingOut',
+    WaitTdlibParameters = 'authorizationStateWaitTdlibParameters',
+    Closing = 'authorizationStateClosing'
 }

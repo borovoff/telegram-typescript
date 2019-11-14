@@ -262,127 +262,68 @@ export class MessagesComponent extends HTMLElement {
     .stranger.first {
         border-top-left-radius: 12px;
     }
-
-    /*.my.last:before, .my.last:after {*/
-    /*    content: "";*/
-    /*    position: absolute;*/
-    /*    bottom: 0;*/
-    /*    height: 20px;*/
-    /*}*/
-    
-    /*.my.last:before {*/
-    /*    z-index: 0;*/
-    /*    right: -8px;*/
-    /*    width: 20px;*/
-    /*    background: rgb(63, 107, 149);*/
-    /*    border-bottom-left-radius: 15px;*/
-    /*}*/
-    
-    /*.my.last:after {*/
-    /*    z-index: 1;*/
-    /*    right: -10px;*/
-    /*    width: 10px;*/
-    /*    background: rgb(24, 34, 45);*/
-    /*    border-bottom-left-radius: 10px;*/
-    /*}*/
-
-    /*.stranger.last:before, .stranger.last:after {*/
-    /*    content: "";*/
-    /*    position: absolute;*/
-    /*    bottom: 0;*/
-    /*    height: 20px;*/
-    /*}*/
-    
-    /*.stranger.last:before {*/
-    /*    z-index: 0;*/
-    /*    left: -7px;*/
-    /*    width: 20px;*/
-    /*    background: rgb(34, 48, 63);*/
-    /*    border-bottom-right-radius: 15px;*/
-    /*}*/
-    
-    /*.stranger.last:after {*/
-    /*    z-index: 1;*/
-    /*    left: -10px;*/
-    /*    width: 10px;*/
-    /*    background: rgb(24, 34, 45);*/
-    /*    border-bottom-right-radius: 10px;*/
-    /*}*/
     
     .tail {
-        
+        position: absolute;
+        z-index: -1;
+        bottom: 0;
+        height: 20px;
+        width: 8px;
+    }
+    
+    .my.last > .tail {
+        right: -7px;
+        border-radius: 0 0 1px 0 / 0 0 4px 0;
+        background-color: var(--my-background);
+        box-shadow: 1px 1px 2px var(--message-shadow);
     }
 
     .stranger.last > .tail {
-        position: absolute;
-        left: -8px;
-        bottom: 0px;
-        height: 20px;
-        width: 9px;
+        left: -7px;
         border-radius: 0 0 0 1px / 0 0 0 4px;
         background-color: var(--stranger-background);
-        z-index: -1;
         box-shadow: -1px 1px 2px  var(--message-shadow);
     }
-
-    .stranger.last > .tail:before {
+    
+    .tail:before {
         content: '';
         position: absolute;
-        left: 1px;
-        bottom: 0px;
+        bottom: 0;
         width: 2px;
         height: 2px;
         border-radius: 10px;
         z-index: -1;
+    }
+
+    .stranger.last > .tail:before {
+        left: 0;
         background-color: var(--stranger-background);
+    }
+    
+    .my.last > .tail:before {
+        left: 6px;
+        background-color: var(--my-background);
+    }
+    
+    .tail:after {
+        content: '';
+        position: absolute;
+        z-index: 16;
+        width: 13px;
+        height: 25px;
+        top: -4px;
     }
 
     .stranger.last > .tail:after {
-        content: '';
-        position: absolute;
         right: 1px;
-        top: -4px;
-        width: 13px;
-        height: 25px;
         border-radius: 0 0 100% 0 / 0 0 86% 0;
-        z-index: 16;
         background-color: var(--chat-background);
         box-shadow: inset -1px 0 2px -1px var(--message-shadow);
     }
 
-    .my.last > .tail {
-        position: absolute;
-        right: -7px;
-        bottom: 0px;
-        height: 20px;
-        width: 8px;
-        border-radius: 0 0 1px 0 / 0 0 4px 0;
-        background-color: var(--my-background);
-        z-index: -1;
-        box-shadow: 1px 1px 2px var(--message-shadow);
-    }
-
-    .my.last > .tail:before {
-        content: '';
-        position: absolute;
-        left: 6px;
-        bottom: 0px;
-        width: 2px;
-        height: 2px;
-        border-radius: 10px;
-        z-index: -1;
-        background-color: var(--my-background);
-    }
-
     .my.last > .tail:after {
-        content: '';
-        position: absolute;
         right: -6px;
-        top: -4px;
-        width: 13px;
-        height: 25px;
         border-radius: 0 0 0 100% / 0 0 0 86%;
-        z-index: 16;
         background-color: var(--chat-background);
         box-shadow: inset 1px 0 2px -1px var(--message-shadow);
     }
