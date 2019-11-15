@@ -81,15 +81,23 @@ export class ChatsComponent extends HTMLElement {
         this.innerHTML = `
 <style>
     .chats {
-        width: 300px;
-        height: calc(100% - 50px);
+        width: 420px;
+        height: 100%;
         overflow-y: auto;
     }
 
     .chat {
-        padding: 10px;
+        margin: 2px 2px 2px 8px;
+        padding: 8px 12px 8px 8px;
         display: flex;
         color: black;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+    
+    .chat:hover {
+        background-color: rgb(241, 243, 244);
     }
     
     .current-chat {
@@ -97,33 +105,35 @@ export class ChatsComponent extends HTMLElement {
     }
 
     .chat-image, .letter-circle {
-        height: 50px;
-        width: 50px;
+        height: 54px;
+        width: 54px;
         border-radius: 50%;
         color: white;
     }
 
     .letter-circle {
         text-align: center;
-        line-height: 52px;
+        line-height: 54px;
         font-size: 20px;
     }
 
     .chat-text {
         position: relative;
         margin-left: 10px;
-        width: 200px;
+        width: 320px;
     }
 
     .chat-top, .chat-bottom {
         position: absolute;
         display: flex;
-        width: 200px;
+        width: 100%;
     }
     
     .chat-top {
         left: 0;
-        top: 0;
+        top: 6px;
+        align-items: center;
+        height: 20px;
     }
 
     .chat-title {
@@ -131,11 +141,13 @@ export class ChatsComponent extends HTMLElement {
         white-space: nowrap;
         text-overflow: ellipsis;
         width: 100%;
+        font-weight: bold;
     }
 
     .chat-read {
         white-space: nowrap;
         color: rgb(95, 99, 105);
+        font-size: 12px;
     }
 
     .chat-message {
@@ -144,20 +156,26 @@ export class ChatsComponent extends HTMLElement {
         text-overflow: ellipsis;
         width: 100%;
         color: rgb(112, 117, 121);
+        align-self: flex-start;
+        height: 20px;
     }
     
     .chat-bottom {
+        width: 100%;
         left: 0;
-        bottom: 0;
-        display: flex;
-        width: 200px;
+        bottom: 2px;
+        height: 24px;
     }
     
     .chat-counter {
         background-color: rgb(83, 203, 99);
         color: white;
-        padding: 5px 10px;
+        padding: 0 8px;
         border-radius: 18px;
+        line-height: 24px;
+        font-size: 13px;
+        height: 24px;
+        align-self: flex-end;
     }
 </style>`;
     }

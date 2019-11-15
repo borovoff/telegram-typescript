@@ -10,11 +10,12 @@ export class LeftColumnComponent extends HTMLElement {
         display: flex;
         flex-direction: column;
         background-color: white;
+        box-shadow: 1px 0 2px rgb(218, 220, 224);
     }
     
     .control-row {
         display: flex;
-        height: 50px;;
+        height: 60px;;
     }
 </style>`;
 

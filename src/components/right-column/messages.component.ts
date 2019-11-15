@@ -8,8 +8,9 @@ import {UpdateMessageSendSucceeded} from "../../models/message/update-message-se
 import {UpdateMessageContent} from "../../models/message/update-message-content";
 import {currentChat} from "../../current-chat";
 import {UpdateChatReadOutbox} from "../../models/chat/update-chat-read-outbox";
+import {BaseHTMLElement} from "../base-html-element";
 
-export class MessagesComponent extends HTMLElement {
+export class MessagesComponent extends BaseHTMLElement {
     messagesContainer: HTMLElement;
     messages = new Map<number, MessageComponent>([]);
     canAppend = true;
@@ -18,6 +19,9 @@ export class MessagesComponent extends HTMLElement {
     constructor() {
         super();
         this.css();
+
+        this.hide();
+        currentChat.subscribe(() => this.show());
 
         const style = this.style;
         style.overflowY = 'auto';

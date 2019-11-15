@@ -33,6 +33,7 @@ export class PhoneFormComponent extends FormComponent {
         this.input.oninput = () => {
             this.value.value = this.input.value;
             FormComponent.show(this.caption);
+            this.removeInvalid(LoginPlaceholder.Phone);
         }
     }
 

@@ -8,6 +8,7 @@ import {LOGIN_TEXT} from "../../../models/interface/login-text";
 import {LoginButtonComponent} from "../login-button.component";
 import {LoginButtonText} from "../../../models/interface/login-button-text";
 import {Checkbox} from "../../../models/interface/checkbox";
+import {ErrorMessage} from "../../../models/error-message";
 
 
 export class PhoneComponent extends LoginComponent {
@@ -49,10 +50,18 @@ export class PhoneComponent extends LoginComponent {
         this.appendChild(next);
 
         const setNumber = (phone: string) => {
+            next.load();
+
             this.setNumber(phone).catch((error: Error) => {
-                const errorElement = document.createElement('p');
-                errorElement.innerText = error.message;
-                document.body.appendChild(errorElement);
+                next.setBaseText();
+                switch (error.message) {
+                    case ErrorMessage.PhoneNumberInvalid:
+                        phoneComponent.setInvalid('Phone number invalid');
+                        break;
+                    default:
+                        phoneComponent.setInvalid(error.message);
+                        break;
+                }
             });
         };
 

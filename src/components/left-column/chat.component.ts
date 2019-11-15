@@ -6,6 +6,7 @@ import {FilePart} from "../../models/file/file-part";
 import {Message} from "../../models/message/message";
 import {DateHelper} from "../../date-helper";
 import {ChatCounterComponent} from "./chat-counter.component";
+import {ChatPhotoComponent} from "../chat-photo.component";
 
 export class ChatComponent extends HTMLElement {
     message: HTMLElement;
@@ -13,16 +14,6 @@ export class ChatComponent extends HTMLElement {
     chat: Chat;
 
     private _lastMessage: Message;
-    private colors = [
-        '#cc90e2',
-        '#80d066',
-        '#ecd074',
-        '#6fb1e4',
-        '#e57979',
-        '#f98bae',
-        '#73cdd0',
-        '#fba76f'
-    ];
 
     constructor(chat: Chat) {
         super();
@@ -31,27 +22,7 @@ export class ChatComponent extends HTMLElement {
 
         this.classList.add('chat');
 
-        const photo = chat.photo;
-        if (photo) {
-            const img = this.create('img') as HTMLImageElement;
-            img.classList.add('chat-image');
-            this.appendChild(img);
-
-            img.src = photo.small.local.path;
-            fileStore.add(photo.small, (val: File) =>
-                tdlib.readFile(val.id)
-                    .then((r: FilePart) =>
-                        img.src = URL.createObjectURL(r.data))
-                    .catch(_ => {}));
-            tdlib.downloadFile(photo.small);
-        } else {
-            const letterCircle = this.create();
-            letterCircle.classList.add('letter-circle');
-            letterCircle.style.backgroundColor = this.colors[Math.abs(chat.type.user_id) % 8];
-            letterCircle.innerText = this.getInitials(chat.title);
-
-            this.appendChild(letterCircle);
-        }
+        this.appendChild(new ChatPhotoComponent(chat));
 
         const text = this.create();
         text.classList.add('chat-text');
@@ -65,6 +36,8 @@ export class ChatComponent extends HTMLElement {
         title.innerText = chat.title;
         title.classList.add('chat-title');
         top.appendChild(title);
+
+        console.log('chat title: ', chat.title);
 
         this.read = this.create();
         this.read.classList.add('chat-read');
@@ -81,20 +54,6 @@ export class ChatComponent extends HTMLElement {
 
         const counter = new ChatCounterComponent(chat.unread_count);
         bottom.appendChild(counter);
-    }
-
-    getInitials(title: string): string {
-        const array = title.split(' ');
-
-        const second = array[1];
-
-        return this.getLetter(array[0]) + (second ? this.getLetter(second) : '');
-    }
-
-    getLetter(word: string) {
-        const l = word.charAt(0).toUpperCase();
-
-        return l.toLowerCase() !== l ? l : '';
     }
 
     create(tag: string = 'div'): HTMLElement {

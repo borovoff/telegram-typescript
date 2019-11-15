@@ -88,6 +88,7 @@ export class PasswordComponent extends LoginComponent {
 
             if (name === LoginMonkey.Close) {
                 animation.playSegments([0, 50], true);
+                // @ts-ignore
                 animation.onEnterFrame = ev => {
                     if (ev.currentTime > 50) {
                         animation.pause();

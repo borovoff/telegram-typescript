@@ -37,7 +37,6 @@ export class App {
                 break;
             case AuthorizationState.WaitPhoneNumber:
                 this.login.appendChild(new PhoneComponent());
-                // this.login.appendChild(new RegistrationComponent());
                 break;
             case AuthorizationState.WaitCode:
                 const codeComponent = new CodeComponent(update);
@@ -364,10 +363,6 @@ export class App {
         overflow: hidden;
         z-index: 1;
     }
-    
-    /*.with-photo {*/
-    /*    background-color: rgba(104, 104, 104, 0.5);*/
-    /*}*/
     
     .add-photo {
         vertical-align: middle;

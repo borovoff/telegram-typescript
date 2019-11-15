@@ -85,12 +85,14 @@ export class RegistrationComponent extends LoginComponent {
         };
 
         start.button.onclick = () => {
+            start.load();
             this.register(input.value, lastName.input.value);
         };
 
         [name, lastName].forEach(f => f.onsubmit = () => {
             const nameValue = input.value;
             if (nameValue.length > 0) {
+                start.load();
                 this.register(nameValue, lastName.input.value);
             }
         });

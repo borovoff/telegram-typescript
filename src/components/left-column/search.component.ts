@@ -25,23 +25,27 @@ export class SearchComponent extends BaseHTMLElement {
         this.innerHTML = `<style>
     .search-img {
         position: absolute;
-        left: 7px;
-        top: 9px;
+        left: 14px;
+        top: 12px;
+        width: 20px;
     }
     
     .search-form {
         position: relative;
+        margin: 8px;
+        height: 44px;
+        width: 330px;
     }
     
     .search-input {
-        padding: 15px 10px 15px 25px;
-        border: solid 1px rgb(218, 220, 224);
-        border-radius: 34px;
-        height: 14px;
+        padding: 15px 20px 15px 42px;
+        border: none;
+        border-radius: 22px;
         font-size: 14px;
         outline: none;
-        width: 200px;
-        background-color: transparent;
+        width: calc(100% - 62px);
+        height: calc(100% - 30px);
+        background-color: rgb(244, 244, 245);
     }
 </style>`;
     }
