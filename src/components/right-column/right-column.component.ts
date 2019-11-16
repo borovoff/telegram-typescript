@@ -1,6 +1,6 @@
 import {MessagesComponent} from "./messages.component";
 import {InputComponent} from "./input.component";
-import {ChatHeaderComponent} from "./chat-header.component";
+import {ChatHeaderComponent} from "./chat-header/chat-header.component";
 import {BeforeMessagesComponent} from "./before-messages/before-messages.component";
 
 export class RightColumnComponent extends HTMLElement {
@@ -8,11 +8,7 @@ export class RightColumnComponent extends HTMLElement {
         super();
         this.css();
 
-        const style = this.style;
-        style.position = 'relative';
-        style.display = 'flex';
-        style.flexDirection = 'column';
-        style.width = '100%';
+        this.classList.add('right-column');
 
         this.appendChild(new BeforeMessagesComponent());
 
@@ -25,6 +21,14 @@ export class RightColumnComponent extends HTMLElement {
         this.innerHTML = `<style>
     .hide {
         display: none;
+    }
+    
+    .right-column {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        font-size: 14px;
     }
 </style>`;
     }

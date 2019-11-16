@@ -4,6 +4,7 @@ import {fileStore} from "../stores/file-store";
 import {File} from "../models/file/file";
 import {tdlib} from "../tdlib";
 import {FilePart} from "../models/file/file-part";
+import {ChatPhoto} from "../models/chat/chat-photo";
 
 export class ChatPhotoComponent extends BaseHTMLElement {
     private colors = [
@@ -17,30 +18,51 @@ export class ChatPhotoComponent extends BaseHTMLElement {
         '#fba76f'
     ];
 
-    constructor(chat: Chat) {
+    letterCircle: HTMLElement;
+    img: HTMLImageElement;
+
+    constructor(chat?: Chat) {
         super();
 
+        if (chat) this.render(chat);
+    }
+
+    render(chat: Chat) {
         const photo = chat.photo;
         if (photo) {
-            const img = this.create('img') as HTMLImageElement;
-            img.classList.add('chat-image');
-            this.appendChild(img);
-
-            img.src = photo.small.local.path;
-            fileStore.add(photo.small, (val: File) =>
-                tdlib.readFile(val.id)
-                    .then((r: FilePart) =>
-                        img.src = URL.createObjectURL(r.data))
-                    .catch(_ => {}));
-            tdlib.downloadFile(photo.small);
+            this.createImg();
+            this.setSrc(photo);
         } else {
-            const letterCircle = this.create();
-            letterCircle.classList.add('letter-circle');
-            letterCircle.style.backgroundColor = this.colors[Math.abs(chat.type.user_id) % 8];
-            letterCircle.innerText = this.getInitials(chat.title);
-
-            this.appendChild(letterCircle);
+            this.createCircle();
+            this.setInitials(chat);
         }
+    }
+
+    createImg() {
+        this.img = this.create('img') as HTMLImageElement;
+        this.img.classList.add('chat-image');
+        this.appendChild(this.img);
+    }
+
+    createCircle() {
+        this.letterCircle = this.create();
+        this.letterCircle.classList.add('letter-circle');
+        this.appendChild(this.letterCircle);
+    }
+
+    setSrc(photo: ChatPhoto) {
+        this.img.src = photo.small.local.path;
+        fileStore.add(photo.small, (val: File) =>
+            tdlib.readFile(val.id)
+                .then((r: FilePart) =>
+                    this.img.src = URL.createObjectURL(r.data))
+                .catch(_ => {}));
+        tdlib.downloadFile(photo.small);
+    }
+
+    setInitials(chat: Chat) {
+        this.letterCircle.style.backgroundColor = this.colors[Math.abs(chat.type.user_id) % 8];
+        this.letterCircle.innerText = this.getInitials(chat.title);
     }
 
     getInitials(title: string): string {

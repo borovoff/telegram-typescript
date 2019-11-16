@@ -1,5 +1,4 @@
 import {BaseHTMLElement} from "../base-html-element";
-import {tdlib} from "../../tdlib";
 
 export class MenuButtonComponent extends BaseHTMLElement {
     constructor() {
@@ -8,11 +7,10 @@ export class MenuButtonComponent extends BaseHTMLElement {
         this.css();
 
         const button = this.create('button');
-        // button.onclick = () => tdlib.logout();
         button.classList.add('menu-button');
         this.appendChild(button);
 
-        const img = this.create('img') as HTMLImageElement;
+        const img = document.createElement('img');
         img.src = 'assets/menu_svg.svg';
         img.classList.add('menu-img');
         button.appendChild(img);
@@ -28,6 +26,7 @@ export class MenuButtonComponent extends BaseHTMLElement {
         border: none;
         margin: 8px 6px 8px 14px;
         padding: 12px;
+        cursor: pointer;
     }
     
     .menu-img {
@@ -35,7 +34,6 @@ export class MenuButtonComponent extends BaseHTMLElement {
     }
     
     .menu-button:hover {
-        cursor: pointer;
         background-color: rgb(244, 244, 245);
     }
 </style>`;

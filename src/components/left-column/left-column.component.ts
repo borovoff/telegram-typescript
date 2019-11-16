@@ -11,6 +11,7 @@ export class LeftColumnComponent extends HTMLElement {
         flex-direction: column;
         background-color: white;
         box-shadow: 1px 0 2px rgb(218, 220, 224);
+        z-index: 3;
     }
     
     .control-row {

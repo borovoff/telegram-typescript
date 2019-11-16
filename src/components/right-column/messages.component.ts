@@ -20,13 +20,10 @@ export class MessagesComponent extends BaseHTMLElement {
         super();
         this.css();
 
-        this.hide();
-        currentChat.subscribe(() => this.show());
+        this.hideWithStyle();
+        currentChat.subscribe(() => this.showWithStyle('block'));
 
-        const style = this.style;
-        style.overflowY = 'auto';
-        style.height = 'calc(100vh - 50px)';
-        style.scrollBehavior = 'smooth';
+        this.classList.add('messages-component');
 
         this.messagesContainer = document.createElement('div');
         this.messagesContainer.classList.add('messages');
@@ -97,7 +94,9 @@ export class MessagesComponent extends BaseHTMLElement {
 
     appendMessages(messages: Messages, topMessage: Message) {
         if (messages.total_count > 0) {
+
             const height = this.messagesContainer.offsetHeight;
+            console.log('offset height: ', height);
 
             let last = false;
             if (messages.messages[0].is_outgoing !== topMessage.is_outgoing) {
@@ -107,6 +106,7 @@ export class MessagesComponent extends BaseHTMLElement {
 
             this.addMessages(messages, last);
 
+            console.log('offset height: ', this.messagesContainer.offsetHeight);
             this.scrollTo(0, this.messagesContainer.offsetHeight - height);
         }
 
@@ -201,15 +201,22 @@ export class MessagesComponent extends BaseHTMLElement {
 
     css() {
         this.innerHTML = `<style>
+    .messages-component {
+        overflow-y: auto;
+        height: 100%;
+        scroll-behavior: smooth;
+    }
+
     .messages {
         display: flex;
         flex-direction: column;
-        width: calc(100% - 21px);
-        margin: 10px;
+        width: calc(100% - 22px);
+        margin: auto;
+        max-width: 696px;
     }
 
     .message {
-        max-width: 500px;
+        max-width: 600px;
         color: black;
         padding: 10px 16px;
         margin: 2px;
@@ -230,6 +237,7 @@ export class MessagesComponent extends BaseHTMLElement {
     }
 
     .message-date {
+        font-size: 11px;
     }
     
     :root {

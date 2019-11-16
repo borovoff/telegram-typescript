@@ -10,6 +10,16 @@ export class BeforeMessagesComponent extends BaseHTMLElement {
 
         this.classList.add('before-messages');
 
+        const img = document.createElement('img');
+        img.classList.add('before-messages-img');
+        img.src = 'assets/chatsplaceholder_svg.svg';
+        this.appendChild(img);
+
+        const caption = this.create();
+        caption.classList.add('before-messages-caption');
+        caption.innerHTML = `Open Chat <br> or create a new one`;
+        this.appendChild(caption);
+
         const buttons = this.create();
         buttons.classList.add('bm-buttons');
         this.appendChild(buttons);
@@ -23,19 +33,30 @@ export class BeforeMessagesComponent extends BaseHTMLElement {
         const channel = new BeforeMessagesButtonComponent(BeforeMessagesCaption.Channel);
         buttons.appendChild(channel);
 
-
-
-        currentChat.subscribe(() => this.hide());
-
-
+        currentChat.subscribe(() => this.hideWithStyle());
     }
 
     css() {
         this.innerHTML = `<style>
+    :root {
+        --placeholder-blue: rgb(57, 146, 233);
+        --button-blue: rgb(83, 166, 243);
+        --placeholder-gray: rgb(112, 117, 121);
+    }
+    
     .before-messages {
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
+        height: 100%;
+    }
+    
+    .before-messages-caption {
+        text-align: center;
+        font-size: 22px;
+        color: var(--placeholder-gray);
+        margin: 20px;
     }
     
     .bm-buttons {
@@ -53,11 +74,12 @@ export class BeforeMessagesComponent extends BaseHTMLElement {
     }
     
     .bm-caption {
-        color: rgb(112, 117, 121);
+        color: var(--placeholder-gray);
+        font-size: 12px;
     }
 
     .bm-img {
-        background-color: rgb(112, 117, 121);
+        background-color: var(--placeholder-gray);
         width: 34px;
         height: 34px;
         margin: 20px;
@@ -85,17 +107,17 @@ export class BeforeMessagesComponent extends BaseHTMLElement {
         border-radius: 50%;
         margin: 8px;
     }
-    
-    .bm-button:hover {
-        background-color: rgb(83, 166, 243);
+
+    .bm-button-container:hover .bm-button {
+        background-color: var(--button-blue);
     }
-    
-    .bm-button:hover .bm-img {
+
+    .bm-button-container:hover .bm-img {
         background-color: white;
     }
 
-    .bm-button:hover ~ .bm-caption {
-        color: rgb(57, 146, 233);
+    .bm-button-container:hover .bm-caption {
+        color: var(--placeholder-blue);
     }
 </style>`;
     }

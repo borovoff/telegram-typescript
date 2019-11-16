@@ -14,4 +14,12 @@ export class BaseHTMLElement extends HTMLElement {
     hide() {
         this.classList.add('hide');
     }
+
+    hideWithStyle() {
+        this.style.display = 'none';
+    }
+
+    showWithStyle(display: string) {
+        this.style.display = display;
+    }
 }
