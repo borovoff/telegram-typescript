@@ -70,12 +70,14 @@ export class InputComponent extends BaseHTMLElement {
         position: absolute;
         right: 16px;
         top: 16px;
+        cursor: pointer;
     }
 
     .input-smile {
         position: absolute;
         left: 16px;
         top: 16px;
+        cursor: pointer;
     }
     
     .input-microphone {
@@ -87,6 +89,7 @@ export class InputComponent extends BaseHTMLElement {
         border: none;
         background-color: rgb(83, 166, 243);
         z-index: 3;
+        cursor: pointer;
     }
     
     .input-microphone-img {

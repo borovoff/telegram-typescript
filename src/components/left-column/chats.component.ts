@@ -96,6 +96,12 @@ export class ChatsComponent extends HTMLElement {
         cursor: pointer;
     }
     
+    @-moz-document url-prefix() {
+        .chat {
+            margin-right: 8px;
+        }
+    }
+    
     .chat:hover {
         background-color: rgb(241, 243, 244);
     }

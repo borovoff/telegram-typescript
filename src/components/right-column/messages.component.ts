@@ -9,6 +9,7 @@ import {UpdateMessageContent} from "../../models/message/update-message-content"
 import {currentChat} from "../../current-chat";
 import {UpdateChatReadOutbox} from "../../models/chat/update-chat-read-outbox";
 import {BaseHTMLElement} from "../base-html-element";
+import {DateHelper} from "../../date-helper";
 
 export class MessagesComponent extends BaseHTMLElement {
     messagesContainer: HTMLElement;
@@ -104,7 +105,7 @@ export class MessagesComponent extends BaseHTMLElement {
                 this.messages.get(topMessage.id).classList.add('first');
             }
 
-            this.addMessages(messages, last);
+            this.addMessages(messages, last, topMessage.date);
 
             console.log('offset height: ', this.messagesContainer.offsetHeight);
             this.scrollTo(0, this.messagesContainer.offsetHeight - height);
@@ -119,15 +120,28 @@ export class MessagesComponent extends BaseHTMLElement {
         }
         this.readOutbox = false;
 
-        this.addMessages(messages, true);
+        this.addMessages(messages, true, DateHelper.getTimestamp());
 
         this.scrollTo(0, this.scrollHeight);
     }
 
-    addMessages(messages: Messages, last: boolean) {
+    addMessages(messages: Messages, last: boolean, currentTimestamp: number) {
         messages.messages.forEach((m, i) => {
-            const messageComponent = new MessageComponent(m);
+            const previous = i - 1;
+            if (previous > -1) {
+                const previousDate = messages.messages[previous].date;
+                if (!DateHelper.sameDate(m.date, previousDate)) {
+                    const date = this.create();
+                    date.classList.add('messages-date');
+                    date.innerText = DateHelper.getTimeMessages(previousDate);
 
+                    this.messagesContainer.insertBefore(date, this.messagesContainer.firstChild);
+
+                    last = true;
+                }
+            }
+
+            const messageComponent = new MessageComponent(m);
             messageComponent.addClasses(last, m.is_outgoing);
             this.messagesContainer.insertBefore(messageComponent, this.messagesContainer.firstChild);
 
@@ -233,6 +247,18 @@ export class MessagesComponent extends BaseHTMLElement {
 
     .message-text {
     }
+    
+    .messages-date {
+        background-color: rgb(179, 184, 187);
+        color: white;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 8px;
+        margin: 8px;
+        align-self: center;
+        border-radius: 12px;
+    }
 
     .float-container {
         float: right;
@@ -313,7 +339,17 @@ export class MessagesComponent extends BaseHTMLElement {
         left: -7px;
         border-radius: 0 0 0 1px / 0 0 0 4px;
         background-color: var(--stranger-background);
-        box-shadow: -1px 1px 2px  var(--message-shadow);
+        box-shadow: -1px 1px 2px var(--message-shadow);
+    }
+
+    @-moz-document url-prefix() {
+        .stranger.last > .tail {
+            box-shadow: -1px 1px 1px var(--message-shadow);
+        }
+
+        .my.last > .tail {
+            box-shadow: 1px 1px 1px var(--message-shadow);
+        }
     }
     
     .tail:before {
