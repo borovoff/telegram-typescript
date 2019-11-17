@@ -7,22 +7,28 @@ import {tdlib} from "../../../tdlib";
 import {Error} from "../../../models/error";
 import {ErrorMessage} from "../../../models/error-message";
 import {LoginComponent} from "../login.component";
-import lottie, {AnimationItem} from "lottie-web";
 import {PasswordFormComponent} from "./password-form.component";
 import {FormPassword} from "../../../models/interface/form-password";
 
 interface Animation {
     container: HTMLElement;
-    animation: AnimationItem;
+    animation: any;
 }
 
 export class PasswordComponent extends LoginComponent {
     animationContainer: HTMLElement;
+    lottie;
 
     constructor() {
         super(LOGIN_TEXT.password);
 
+        import(/* webpackPrefetch: true */ "lottie-web").then(lottie => {
+            this.lottie = lottie;
+            this.render();
+        });
+    }
 
+    render() {
         const type = InputType.Password;
         const pass = new PasswordFormComponent(LoginPlaceholder.Password, type);
         this.appendChild(pass);
@@ -78,7 +84,7 @@ export class PasswordComponent extends LoginComponent {
             container.classList.add('animation-container');
             this.animationContainer.appendChild(container);
 
-            const animation = lottie.loadAnimation({
+            const animation = this.lottie.loadAnimation({
                 container: container,
                 renderer: 'svg',
                 loop: false,

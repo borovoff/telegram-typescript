@@ -8,7 +8,7 @@ import {currentChat} from "../../current-chat";
 import {UpdateChatReadOutbox} from "../../models/chat/update-chat-read-outbox";
 
 export class ChatsComponent extends HTMLElement {
-    chats = {};
+    chats = new Map<number, ChatComponent>();
 
     constructor() {
         super();
@@ -24,7 +24,7 @@ export class ChatsComponent extends HTMLElement {
     }
 
     updateChatReadOutbox(update: UpdateChatReadOutbox) {
-        const chatComponent = this.chats[update.chat_id] as ChatComponent;
+        const chatComponent = this.chats.get(update.chat_id);
         chatComponent.chat.last_read_outbox_message_id = update.last_read_outbox_message_id;
     }
 
@@ -32,11 +32,11 @@ export class ChatsComponent extends HTMLElement {
         const chatComponent = new ChatComponent(chat);
         chatComponent.id = chat.id.toString();
 
-        this.chats[chat.id] = chatComponent;
+        this.chats.set(chat.id, chatComponent);
     }
 
     updateChatLastMessage(update: UpdateChatLastMessage) {
-        const chatComponent = this.chats[update.chat_id] as ChatComponent;
+        const chatComponent = this.chats.get(update.chat_id);
 
         chatComponent.setLastMessage(update.last_message);
 
@@ -57,7 +57,7 @@ export class ChatsComponent extends HTMLElement {
             currentChat.value = chatComponent.chat;
 
             if (currentChatId.value) {
-                const previous = this.chats[currentChatId.value] as ChatComponent;
+                const previous = this.chats.get(currentChatId.value);
                 previous.classList.remove('current-chat');
             }
 
@@ -73,7 +73,7 @@ export class ChatsComponent extends HTMLElement {
         if (chatElement) {
             this.insertBefore(chatElement, this.firstChild);
         } else {
-            this.appendChild(this.chats[chatOrder.chat_id]);
+            this.appendChild(this.chats.get(chatOrder.chat_id));
         }
     }
 

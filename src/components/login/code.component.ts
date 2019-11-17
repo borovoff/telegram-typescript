@@ -9,19 +9,23 @@ import {tdlib} from "../../tdlib";
 import {Error} from "../../models/error";
 import {ErrorMessage} from "../../models/error-message";
 import {UpdateListener} from "../../models/update-listener";
-import lottie, {AnimationItem} from "lottie-web";
 import {LoginComponent} from "./login.component";
 
 export class CodeComponent extends LoginComponent {
     editPhone: UpdateListener<string> = new UpdateListener();
     currentName = LoginMonkey.Idle;
+    lottie;
 
     constructor(update: UpdateAuthorizationState) {
         super();
 
         const codeInfo = update.authorization_state.code_info;
         this.setText(this.getCaption(codeInfo.type), codeInfo.phone_number);
-        this.loadAnimation([LoginMonkey.Idle, LoginMonkey.Tracking]);
+
+        import(/* webpackPrefetch: true */ "lottie-web").then(lottie => {
+            this.lottie = lottie;
+            this.loadAnimation([LoginMonkey.Idle, LoginMonkey.Tracking]);
+        });
 
         this.render();
     }
@@ -63,7 +67,7 @@ export class CodeComponent extends LoginComponent {
             container.classList.add('animation-container');
             animationContainer.appendChild(container);
 
-            const animation = lottie.loadAnimation({
+            const animation = this.lottie.loadAnimation({
                 container: container,
                 renderer: 'svg',
                 loop: true,
