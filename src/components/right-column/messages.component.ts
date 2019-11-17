@@ -10,6 +10,7 @@ import {currentChat} from "../../current-chat";
 import {UpdateChatReadOutbox} from "../../models/chat/update-chat-read-outbox";
 import {BaseHTMLElement} from "../base-html-element";
 import {DateHelper} from "../../date-helper";
+import {MessageCheck} from "../../models/interface/message-check";
 
 export class MessagesComponent extends BaseHTMLElement {
     messagesContainer: HTMLElement;
@@ -63,7 +64,7 @@ export class MessagesComponent extends BaseHTMLElement {
 
             for (const m of this.messages.values()) {
                 if (readOutbox) {
-                    if (m.checkContainer.childElementCount == 2) {
+                    if (m.img.src === MessageCheck.Two) {
                         break;
                     } else {
                         m.readOutboxAnimate();
@@ -71,7 +72,7 @@ export class MessagesComponent extends BaseHTMLElement {
                 } else if (m.message.id === update.last_read_outbox_message_id) {
                     readOutbox = true;
 
-                    if (m.checkContainer.childElementCount == 2) {
+                    if (m.img.src === MessageCheck.Two) {
                         break;
                     } else {
                         m.readOutboxAnimate();
@@ -277,12 +278,16 @@ export class MessagesComponent extends BaseHTMLElement {
         float: right;
         position: relative;
         top: 6px;
-        margin: 0 -4px 0 -6px;
+        margin: 0 -8px 0 -6px;
         display: flex;
     }
     
     .stranger .float-container {
         margin-right: -1px;
+    }
+    
+    .my .float-container {
+        width: 54px;
     }
     
     .my .message-date {

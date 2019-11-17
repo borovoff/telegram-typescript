@@ -3,6 +3,7 @@ import {DateHelper} from "../../date-helper";
 import {MessageText} from "../../models/message/message-text";
 import {BaseHTMLElement} from "../base-html-element";
 import {MessageContent} from "../../models/message/message-content";
+import {MessageCheck} from "../../models/interface/message-check";
 
 export class MessageComponent extends BaseHTMLElement {
     private _message: Message;
@@ -38,7 +39,7 @@ export class MessageComponent extends BaseHTMLElement {
 
         if (message.is_outgoing) {
             this.img = document.createElement('img');
-            this.img.src = 'assets/1check_svg.svg';
+            this.img.src = MessageCheck.One;
             this.img.classList.add('check-img');
             floatContainer.appendChild(this.img);
         }
@@ -68,12 +69,12 @@ export class MessageComponent extends BaseHTMLElement {
     }
 
     readOutbox() {
-        this.img.src = 'assets/2checks_svg.svg';
+        this.img.src = MessageCheck.Two;
         // this.addCheckMark(['check-mark', 'check-mark-received'])
     }
 
     readOutboxAnimate() {
-        this.img.src = 'assets/2checks_svg.svg';
+        this.img.src = MessageCheck.Two;
         // this.addCheckMark(['check-mark', 'check-mark-received'])
     }
 
