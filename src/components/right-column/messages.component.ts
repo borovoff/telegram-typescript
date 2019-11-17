@@ -16,6 +16,7 @@ export class MessagesComponent extends BaseHTMLElement {
     messages = new Map<number, MessageComponent>([]);
     canAppend = true;
     private readOutbox: boolean;
+    private scrollAppend: boolean;
 
     constructor() {
         super();
@@ -32,14 +33,8 @@ export class MessagesComponent extends BaseHTMLElement {
 
         this.addEventListener('scroll', (ev: Event) => {
             const target = ev.target as MessagesComponent;
-            if (target.scrollTop < 50 && this.canAppend) {
-                this.canAppend = false;
-                const messageComponents = Array.from(this.messages.values());
-                const topMessage = messageComponents[messageComponents.length - 1].message;
-                tdlib.appendChatHistory(currentChatId.value, topMessage.id)
-                    .then((messages: Messages) => {
-                        this.appendMessages(messages, topMessage)
-                    });
+            if (target.scrollTop < 50) {
+                this.appendRequest();
             }
         });
 
@@ -48,6 +43,18 @@ export class MessagesComponent extends BaseHTMLElement {
         tdlib.sendSucceeded.subscribe(update => this.updateMessageSendSucceed(update));
         tdlib.messageContent.subscribe(update => this.updateMessageContent(update));
         tdlib.readOutbox.subscribe(update => this.updateChatReadOutbox(update));
+    }
+
+    appendRequest() {
+        if (this.canAppend) {
+            this.canAppend = false;
+            const messageComponents = Array.from(this.messages.values());
+            const topMessage = messageComponents[messageComponents.length - 1].message;
+            tdlib.appendChatHistory(currentChatId.value, topMessage.id)
+                .then((messages: Messages) => {
+                    this.appendMessages(messages, topMessage)
+                });
+        }
     }
 
     updateChatReadOutbox(update: UpdateChatReadOutbox) {
@@ -97,7 +104,6 @@ export class MessagesComponent extends BaseHTMLElement {
         if (messages.total_count > 0) {
 
             const height = this.messagesContainer.offsetHeight;
-            console.log('offset height: ', height);
 
             let last = false;
             if (messages.messages[0].is_outgoing !== topMessage.is_outgoing) {
@@ -107,8 +113,9 @@ export class MessagesComponent extends BaseHTMLElement {
 
             this.addMessages(messages, last, topMessage.date);
 
-            console.log('offset height: ', this.messagesContainer.offsetHeight);
             this.scrollTo(0, this.messagesContainer.offsetHeight - height);
+        } else {
+            this.scrollAppend = false;
         }
 
         this.canAppend = true;
@@ -119,9 +126,13 @@ export class MessagesComponent extends BaseHTMLElement {
             this.messagesContainer.firstChild.remove();
         }
         this.readOutbox = false;
+        this.scrollAppend = true;
 
         this.addMessages(messages, true, DateHelper.getTimestamp());
 
+        if (this.scrollHeight === this.offsetHeight && this.scrollAppend) {
+            this.appendRequest();
+        }
         this.scrollTo(0, this.scrollHeight);
     }
 
@@ -129,7 +140,8 @@ export class MessagesComponent extends BaseHTMLElement {
         messages.messages.forEach((m, i) => {
             const previous = i - 1;
             if (previous > -1) {
-                const previousDate = messages.messages[previous].date;
+                const previousMessage = messages.messages[previous];
+                const previousDate = previousMessage.date;
                 if (!DateHelper.sameDate(m.date, previousDate)) {
                     const date = this.create();
                     date.classList.add('messages-date');
@@ -137,6 +149,7 @@ export class MessagesComponent extends BaseHTMLElement {
 
                     this.messagesContainer.insertBefore(date, this.messagesContainer.firstChild);
 
+                    this.messages.get(previousMessage.id).classList.add('first');
                     last = true;
                 }
             }

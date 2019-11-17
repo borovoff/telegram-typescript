@@ -2,6 +2,7 @@ import {Message} from '../../models/message/message';
 import {DateHelper} from "../../date-helper";
 import {MessageText} from "../../models/message/message-text";
 import {BaseHTMLElement} from "../base-html-element";
+import {MessageContent} from "../../models/message/message-content";
 
 export class MessageComponent extends BaseHTMLElement {
     private _message: Message;
@@ -18,14 +19,13 @@ export class MessageComponent extends BaseHTMLElement {
         this.appendChild(tail);
 
         const textEl = document.createElement('div');
-        const text = message.content.text;
+        textEl.classList.add('message-text');
+        this.appendChild(textEl);
+
         this.span = document.createElement('span');
         this.span.classList.add('message-span');
-        if (text) {
-            this.span.innerText = text.text;
-        }
+        this.span.innerText = MessageComponent.getContent(message.content);
         textEl.appendChild(this.span);
-        textEl.classList.add('message-text');
 
         const floatContainer = document.createElement('div');
         floatContainer.classList.add('float-container');
@@ -44,7 +44,6 @@ export class MessageComponent extends BaseHTMLElement {
         }
 
         this.classList.add('message');
-        this.appendChild(textEl);
     }
 
     get message(): Message {
@@ -82,6 +81,100 @@ export class MessageComponent extends BaseHTMLElement {
         const classList = this.classList;
         classList.add(is_outgoing ? 'my' : 'stranger');
         if (last) classList.add('last');
+    }
+
+    static getContent(messageContent): string {
+        const contentType = messageContent['@type'];
+        let text = '';
+
+        switch (contentType) {
+            // case MessageContent.Animation:
+            //     break;
+            // case MessageContent.Audio:
+            //     break;
+            // case MessageContent.BasicGroupChatCreate:
+            //     break;
+            // case MessageContent.Call:
+            //     break;
+            // case MessageContent.ChatAddMembers:
+            //     break;
+            // case MessageContent.ChatChangePhoto:
+            //     break;
+            // case MessageContent.ChatChangeTitle:
+            //     break;
+            // case MessageContent.ChatDeleteMember:
+            //     break;
+            // case MessageContent.ChatDeletePhoto:
+            //     break;
+            // case MessageContent.ChatJoinByLink:
+            //     break;
+            // case MessageContent.ChatSetTtl:
+            //     break;
+            // case MessageContent.ChatUpgradeFrom:
+            //     break;
+            // case MessageContent.ChatUpgradeTo:
+            //     break;
+            // case MessageContent.Contact:
+            //     break;
+            // case MessageContent.ContactRegistered:
+            //     break;
+            // case MessageContent.CustomServiceAction:
+            //     break;
+            // case MessageContent.Document:
+            //     break;
+            // case MessageContent.ExpiredPhoto:
+            //     break;
+            // case MessageContent.ExpiredVideo:
+            //     break;
+            // case MessageContent.Game:
+            //     break;
+            // case MessageContent.GameScore:
+            //     break;
+            // case MessageContent.Invoice:
+            //     break;
+            // case MessageContent.Location:
+            //     break;
+            // case MessageContent.PassportDataReceived:
+            //     break;
+            // case MessageContent.PassportDataSent:
+            //     break;
+            // case MessageContent.PaymentSuccessful:
+            //     break;
+            // case MessageContent.PaymentSuccessfulBot:
+            //     break;
+            // case MessageContent.Photo:
+            //     break;
+            // case MessageContent.PinMessage:
+            //     break;
+            // case MessageContent.Poll:
+            //     break;
+            // case MessageContent.ScreenshotTaken:
+            //     break;
+            // case MessageContent.Sticker:
+            //     break;
+            // case MessageContent.SupergroupChatCreate:
+            //     break;
+            case MessageContent.Text:
+                text = messageContent.text.text;
+                break;
+            // case MessageContent.Unsupported:
+            //     break;
+            // case MessageContent.Venue:
+            //     break;
+            // case MessageContent.Video:
+            //     break;
+            // case MessageContent.VideoNote:
+            //     break;
+            // case MessageContent.VoiceNote:
+            //     break;
+            // case MessageContent.WebsiteConnected:
+            //     break;
+            default:
+                text = '[' + contentType.slice(7) + ']';
+                break;
+        }
+
+        return text;
     }
 }
 

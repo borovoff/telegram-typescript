@@ -7,6 +7,7 @@ import {Message} from "../../models/message/message";
 import {DateHelper} from "../../date-helper";
 import {ChatCounterComponent} from "./chat-counter.component";
 import {ChatPhotoComponent} from "../chat-photo.component";
+import {MessageComponent} from "../right-column/message.component";
 
 export class ChatComponent extends HTMLElement {
     message: HTMLElement;
@@ -63,10 +64,7 @@ export class ChatComponent extends HTMLElement {
     setLastMessage(message: Message) {
         this._lastMessage = message;
 
-        const text = message.content.text;
-        if (text) {
-            this.message.innerText = text.text.replace(/\n/g, ' ');
-        }
+        this.message.innerText = MessageComponent.getContent(message.content).replace(/\n/g, ' ');
 
         this.read.innerText = DateHelper.getTime(message.date);
     }

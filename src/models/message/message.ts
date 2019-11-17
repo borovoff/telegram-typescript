@@ -1,6 +1,7 @@
 import {TdlibType} from '../tdlib-type';
 import {MessageText} from './message-text';
 import {MessageSendingState} from "./message-sending-state";
+import {MessageDocument} from "./message-document";
 
 export class Message extends TdlibType {
     author_signature: string;
@@ -10,7 +11,7 @@ export class Message extends TdlibType {
     can_be_forwarded: boolean;
     chat_id: number;
     contains_unread_mention: boolean;
-    content: MessageText;
+    content: MessageText | MessageDocument;
     date: number;
     edit_date: number;
     id: number;
