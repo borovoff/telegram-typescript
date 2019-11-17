@@ -51,3 +51,4 @@ Thumbs.db
 
 /server-deploy.sh
 /test.html
+/src/secret-hash.ts

@@ -59,7 +59,7 @@ export class MessagesComponent extends BaseHTMLElement {
     }
 
     updateChatReadOutbox(update: UpdateChatReadOutbox) {
-        if (currentChat.value.id === update.chat_id) {
+        if (currentChat.value && currentChat.value.id === update.chat_id) {
             let readOutbox = false;
 
             for (const m of this.messages.values()) {

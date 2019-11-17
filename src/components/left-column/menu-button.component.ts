@@ -1,4 +1,5 @@
 import {BaseHTMLElement} from "../base-html-element";
+import {tdlib} from "../../tdlib";
 
 export class MenuButtonComponent extends BaseHTMLElement {
     constructor() {
@@ -8,6 +9,9 @@ export class MenuButtonComponent extends BaseHTMLElement {
 
         const button = this.create('button');
         button.classList.add('menu-button');
+        button.onclick = () => {
+            if (confirm('Logout?')) tdlib.logout();
+        };
         this.appendChild(button);
 
         const img = document.createElement('img');

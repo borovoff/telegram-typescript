@@ -69,7 +69,7 @@ export class PhoneComponent extends LoginComponent {
             ev.preventDefault();
             const value = phoneComponent.input.value;
 
-            if (value.length > 10) setNumber(value);
+            if (value.length > 9) setNumber(value);
         };
 
         next.button.onclick = () => {
@@ -83,7 +83,7 @@ export class PhoneComponent extends LoginComponent {
         });
 
         phoneComponent.value.subscribe(v => {
-            if (v.length > 10) {
+            if (v.length > 9) {
                 FormComponent.show(next.button);
             } else {
                 FormComponent.hide(next.button);

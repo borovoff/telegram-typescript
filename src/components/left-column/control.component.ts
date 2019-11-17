@@ -1,5 +1,4 @@
 import {BaseHTMLElement} from "../base-html-element";
-import {tdlib} from "../../tdlib";
 import {MenuButtonComponent} from "./menu-button.component";
 import {SearchComponent} from "./search.component";
 
