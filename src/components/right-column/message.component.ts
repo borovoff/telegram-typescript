@@ -7,6 +7,7 @@ export class MessageComponent extends BaseHTMLElement {
     private _message: Message;
     private span: HTMLElement;
     checkContainer: HTMLElement;
+    img: HTMLImageElement;
 
     constructor(message: Message) {
         super();
@@ -19,6 +20,7 @@ export class MessageComponent extends BaseHTMLElement {
         const textEl = document.createElement('div');
         const text = message.content.text;
         this.span = document.createElement('span');
+        this.span.classList.add('message-span');
         if (text) {
             this.span.innerText = text.text;
         }
@@ -30,17 +32,15 @@ export class MessageComponent extends BaseHTMLElement {
         textEl.appendChild(floatContainer);
 
         const date = document.createElement('div');
-        date.innerText = DateHelper.getTime(message.date);
+        date.innerText = DateHelper.getTimeMessage(message.date);
         date.classList.add('message-date');
         floatContainer.appendChild(date);
 
         if (message.is_outgoing) {
-            this.checkContainer = document.createElement('div');
-            this.checkContainer.classList.add('check-container');
-
-            this.addCheckMark(['check-mark']);
-
-            floatContainer.appendChild(this.checkContainer);
+            this.img = document.createElement('img');
+            this.img.src = 'assets/1check_svg.svg';
+            this.img.classList.add('check-img');
+            floatContainer.appendChild(this.img);
         }
 
         this.classList.add('message');
@@ -69,11 +69,13 @@ export class MessageComponent extends BaseHTMLElement {
     }
 
     readOutbox() {
-        this.addCheckMark(['check-mark', 'check-mark-received'])
+        this.img.src = 'assets/2checks_svg.svg';
+        // this.addCheckMark(['check-mark', 'check-mark-received'])
     }
 
     readOutboxAnimate() {
-        this.addCheckMark(['check-mark', 'check-mark-received'])
+        this.img.src = 'assets/2checks_svg.svg';
+        // this.addCheckMark(['check-mark', 'check-mark-received'])
     }
 
     addClasses(last: boolean, is_outgoing: boolean) {

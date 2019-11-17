@@ -218,26 +218,45 @@ export class MessagesComponent extends BaseHTMLElement {
     .message {
         max-width: 600px;
         color: black;
-        padding: 10px 16px;
+        padding: 8px;
         margin: 2px;
         word-break: break-word;
         position: relative;
         box-shadow: 0 1px 2px var(--message-shadow);
         z-index: 0;
     }
+    
+    .message-span:after {
+        content: '';
+        margin-right: 10px;
+    }
 
     .message-text {
-        overflow: auto;
     }
 
     .float-container {
         float: right;
-        margin-left: 10px;
+        position: relative;
+        top: 6px;
+        margin: 0 -4px 0 -6px;
         display: flex;
+    }
+    
+    .stranger .float-container {
+        margin-right: -1px;
+    }
+    
+    .my .message-date {
+        color: rgb(83, 173, 83);
+    }
+    
+    .stranger .message-date {
+        color: rgb(160, 170, 179);
     }
 
     .message-date {
-        font-size: 11px;
+        
+        font-size: 12px;
     }
     
     :root {
@@ -338,6 +357,10 @@ export class MessagesComponent extends BaseHTMLElement {
         border-radius: 0 0 0 100% / 0 0 0 86%;
         background-color: var(--chat-background);
         box-shadow: inset 1px 0 2px -1px var(--message-shadow);
+    }
+    
+    .check-img {
+        
     }
     
     .check-container {

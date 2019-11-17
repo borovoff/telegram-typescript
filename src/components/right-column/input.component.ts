@@ -57,10 +57,11 @@ export class InputComponent extends BaseHTMLElement {
         this.innerHTML = `<style>
     .input-component {
         height: 84px;
-        max-width: 696px;
+        max-width: 702px;
         z-index: 1;
         margin: auto;
-        /*width: 100%;*/
+        padding: 0 11px;
+        width: calc(100% - 22px);
         display: flex;
         align-items: center;
     }
@@ -99,9 +100,10 @@ export class InputComponent extends BaseHTMLElement {
     .main-form {
         position: relative;
         height: 54px;
+        width: 100%;
         background-color: transparent;
         align-self: normal !important;
-        margin: 10px 2px 20px;
+        margin: 10px 0 20px;
     }
 
     .main-input {
