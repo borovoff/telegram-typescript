@@ -20,7 +20,7 @@ sudo apt install nodejs
 npm install && npm run deploy
 ```
 
-Script creates the dist folder. Copy all files from there to your server. 
+Script creates the "dist" folder. Copy all files from there to your server. 
 
 ### Development
 
